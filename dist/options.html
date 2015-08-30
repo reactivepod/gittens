@@ -1,0 +1,67 @@
+<!doctype html>
+<head>
+  <title>ungit</title>
+
+  <style>
+    .row {
+      margin-bottom: 10px;
+    }
+
+    #user-list {
+      padding-left: 0;
+    }
+
+    .user-list-item {
+      position: relative;
+      list-style: none;
+      padding: 6px;
+      border-radius: 2px;
+    }
+
+    .user-list-item:hover {
+      background-color: rgba(0, 0, 0, .05);
+    }
+
+    .user-list-remove {
+      display: none;
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      padding: 2px 8px;
+      color: rgba(0, 0, 0, .5);
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    .user-list-remove:hover {
+      color: rgba(0, 0, 0, .7);
+    }
+
+    .user-list-item:hover .user-list-remove {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <label for="theme">Theme</label>
+    <select id="theme">
+     <option value="cats" selected>cats</option>
+    </select>
+  </div>
+
+  <div class="row">
+    <input id="replace-text" type="checkbox" />
+    <label for="replace-text">Replace comment text</label>
+  </div>
+
+  <ul id="user-list">
+  </ul>
+
+  <form id="add-form">
+    <input id="user-input" type="text" placeholder="enter a username"></input>
+    <input id="add-button" type="submit" value="add" />
+  </form>
+
+  <script src="options.js"></script>
+</body>

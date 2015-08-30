@@ -1,0 +1,28 @@
+{
+  "name": "ungit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build-options && npm run build-content",
+    "start": "npm run watch-options & npm run watch-content",
+    "build-options": "browserify ./options -d -t babelify -o dist/options.js",
+    "watch-options": "watchify ./options -d -t babelify -o dist/options.js",
+    "build-content": "browserify ./content -d -t babelify -o dist/content.js",
+    "watch-content": "watchify ./content -d -t babelify -o dist/content.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babelify": "^6.2.0",
+    "browserify": "^11.0.1",
+    "watchify": "^3.3.1"
+  },
+  "dependencies": {
+    "cat-names": "^1.0.2",
+    "inserted-component": "0.0.2",
+    "lorem-ipsum": "^1.0.3",
+    "mutation-summary": "0.0.0"
+  }
+}
