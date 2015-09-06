@@ -4,7 +4,7 @@ Disguises unpleasant gits (as in: [a completely ignorant, childish person with n
 
 ## Installation
 
-This should be on the Chrome Web Store soon™, but for now, go to Chrome Settings -> extensions -> load unpacked extension, and point it at the dist directory.
+This should be on the Chrome Web Store soon™, but for now, go to Chrome Settings -> Extensions -> check off "Developer Mode" -> "Load unpacked extension...", and point it at the `dist` directory.
 
 ## Building
 
@@ -16,4 +16,6 @@ For development, just run `npm start`. To do a single build, run `npm run build`
 
 <img width="444" alt="screenshot 2015-08-30 15 54 34" src="https://cloud.githubusercontent.com/assets/755844/9569931/9fc9a554-4f2f-11e5-9010-8c82b8d38e66.png">
 
-© 2015 Reactive Podcast contributors. Licensed MIT.
+# License
+
+MIT © [Reactivists](https://github.com/orgs/reactivepod/teams/reactivists)
