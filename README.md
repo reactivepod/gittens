@@ -1,6 +1,6 @@
-# ungit
+# Gittens
 
-Disguises unpleasant gits that sometimes crop up on GitHub by replacing them with KITTENS!
+Disguises unpleasant gits (as in: [a completely ignorant, childish person with no manners](http://www.urbandictionary.com/define.php?term=Git)) that sometimes crop up on GitHub by replacing them with KITTENS!
 
 ## Installation
 
