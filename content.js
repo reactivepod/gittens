@@ -1,84 +1,101 @@
+import 'babel/polyfill';
 import catNames from 'cat-names';
 import lorem from 'lorem-ipsum';
-import MutationSummary from 'mutation-summary';
+import mutationSummary from 'mutation-summary';
 
 const catWords = [
-  'meooow', 'meow', 'scratching post', 'naww',
-  'purrr', 'meeeeow', 'kibbles', 'cuddle', 'snuggle',
-  'purr', 'nyaaa', 'nyan'
+  'meooow',
+  'meow',
+  'scratching post',
+  'naww',
+  'purrr',
+  'meeeeow',
+  'kibbles',
+  'cuddle',
+  'snuggle',
+  'purr',
+  'nyaaa',
+  'nyan',
 ];
 
-let containerSelector = [
+// Selectors.
+const containerSelector = [
   '.js-comment-container',
   '.issue-meta',
   '.gh-header-meta',
 ].join(', ');
-
-let authorSelector = [
+const authorSelector = [
   '.author',
   '.author-name > a',
   '.opened-by > a',
 ].join(', ');
-
-let avatarSelector = ['.avatar', '.timeline-comment-avatar'].join(', ');
-let commentSelector = ['.comment-body > p, .comment-body .email-fragment'].join(', ');
+const avatarSelector = [
+  '.avatar',
+  '.timeline-comment-avatar',
+].join(', ');
+const commentSelector = [
+  '.comment-body > p',
+  '.comment-body .email-fragment',
+].join(', ');
 
 function catPhoto(n, w, h) {
   return `https://placekitten.com/${w}/${h}?image=${n}`;
 }
 
-chrome.storage.local.get(null, function (store) {
-  let settings = store.settings;
-  let userMap = {};
+function replaceUsers(el, store, userMap) {
+  const containers = el.querySelectorAll(containerSelector);
 
-  for (let u of store.users) {
-    let n = Math.floor(Math.random() * 15) + 1;
-    let avatar = catPhoto.bind(null, n);
+  [...containers].forEach((container) => {
+    const author = container.querySelectorAll(authorSelector)[0];
+    const avatar = container.querySelectorAll(avatarSelector)[0];
+    const comments = container.querySelectorAll(commentSelector);
+
+    if (!author) return;
+
+    const username = author.textContent || author.getAttribute('aria-label');
+
+    if (username in userMap) {
+      const uData = userMap[username];
+      author.textContent = uData.name;
+
+      if (avatar) {
+        avatar.src = uData.avatar(avatar.width, avatar.height);
+      }
+
+      if (comments && store.replaceText) {
+        [].forEach.call(comments, (comment) => {
+          comment.textContent = lorem({units: 'paragraphs', words: catWords});
+        });
+      }
+    }
+  });
+}
+
+chrome.storage.local.get(null, (store) => {
+  const userMap = {};
+
+  for (const u of store.users) {
+    const n = Math.floor(Math.random() * 15) + 1;
+    const avatar = catPhoto.bind(null, n);
 
     userMap[u] = {
       name: catNames.random(),
-      avatar
+      avatar,
     };
   }
 
   replaceUsers(document, store, userMap);
 
-  let pjax = document.querySelector('[data-pjax-container]');
+  const pjax = document.querySelector('[data-pjax-container]');
+
   if (pjax) {
-    new MutationSummary({rootNode: pjax, queries: [{all: true}], callback: function (summaries) {
-      let summary = summaries[0];
-      summary.added.forEach(function (el) {
+    mutationSummary({rootNode: pjax, queries: [{all: true}], callback: (summaries) => {
+      const summary = summaries[0];
+      summary.added.forEach((el) => {
         if (el.parentNode === pjax && el.querySelectorAll) {
           replaceUsers(el, store, userMap);
         }
-      })
+      });
     }});
   }
 });
-
-function replaceUsers(el, store, userMap) {
-  let containers = el.querySelectorAll(containerSelector);
-  [].slice.call(containers).forEach(function (container) {
-      let author = container.querySelectorAll(authorSelector)[0];
-      let avatar = container.querySelectorAll(avatarSelector)[0];
-      let comments = container.querySelectorAll(commentSelector);
-
-      if (!(author)) return;
-
-      let username = author.textContent || author.getAttribute('aria-label');
-      if (username in userMap) {
-        let uData = userMap[username];
-        author.textContent = uData.name;
-
-        if (avatar) {
-          avatar.src = uData.avatar(avatar.width, avatar.height);
-        }
-
-        if (comments && store.replaceText) {
-          [].forEach.call(comments, function (comment) {
-            comment.textContent = lorem({units: 'paragraphs', words: catWords});
-          })
-        }
-      }
-    })
-};

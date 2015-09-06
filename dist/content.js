@@ -1,5 +1,112 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}function catPhoto(e,t,a){return"https://placekitten.com/"+t+"/"+a+"?image="+e}function replaceUsers(e,t,a){var r=e.querySelectorAll(containerSelector);[].slice.call(r).forEach(function(e){var r=e.querySelectorAll(authorSelector)[0],o=e.querySelectorAll(avatarSelector)[0],n=e.querySelectorAll(commentSelector);if(r){var l=r.textContent||r.getAttribute("aria-label");if(l in a){var u=a[l];r.textContent=u.name,o&&(o.src=u.avatar(o.width,o.height)),n&&t.replaceText&&[].forEach.call(n,function(e){e.textContent=_loremIpsum2["default"]({units:"paragraphs",words:catWords})})}}})}var _catNames=require("cat-names"),_catNames2=_interopRequireDefault(_catNames),_loremIpsum=require("lorem-ipsum"),_loremIpsum2=_interopRequireDefault(_loremIpsum),_mutationSummary=require("mutation-summary"),_mutationSummary2=_interopRequireDefault(_mutationSummary),catWords=["meooow","meow","scratching post","naww","purrr","meeeeow","kibbles","cuddle","snuggle","purr","nyaaa","nyan"],containerSelector=[".js-comment-container",".issue-meta",".gh-header-meta"].join(", "),authorSelector=[".author",".author-name > a",".opened-by > a"].join(", "),avatarSelector=[".avatar",".timeline-comment-avatar"].join(", "),commentSelector=[".comment-body > p, .comment-body .email-fragment"].join(", ");chrome.storage.local.get(null,function(e){var t=(e.settings,{}),a=!0,r=!1,o=void 0;try{for(var n,l=e.users[Symbol.iterator]();!(a=(n=l.next()).done);a=!0){var u=n.value,c=Math.floor(15*Math.random())+1,m=catPhoto.bind(null,c);t[u]={name:_catNames2["default"].random(),avatar:m}}}catch(i){r=!0,o=i}finally{try{!a&&l["return"]&&l["return"]()}finally{if(r)throw o}}replaceUsers(document,e,t);var s=document.querySelector("[data-pjax-container]");s&&new _mutationSummary2["default"]({rootNode:s,queries:[{all:!0}],callback:function(a){var r=a[0];r.added.forEach(function(a){a.parentNode===s&&a.querySelectorAll&&replaceUsers(a,e,t)})}})});
+'use strict';
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i]; return arr2; } else { return Array.from(arr); } }
+
+var _catNames = require('cat-names');
+
+var _catNames2 = _interopRequireDefault(_catNames);
+
+var _loremIpsum = require('lorem-ipsum');
+
+var _loremIpsum2 = _interopRequireDefault(_loremIpsum);
+
+var _mutationSummary = require('mutation-summary');
+
+var _mutationSummary2 = _interopRequireDefault(_mutationSummary);
+
+var catWords = ['meooow', 'meow', 'scratching post', 'naww', 'purrr', 'meeeeow', 'kibbles', 'cuddle', 'snuggle', 'purr', 'nyaaa', 'nyan'];
+
+// Selectors.
+var containerSelector = ['.js-comment-container', '.issue-meta', '.gh-header-meta'].join(', ');
+var authorSelector = ['.author', '.author-name > a', '.opened-by > a'].join(', ');
+var avatarSelector = ['.avatar', '.timeline-comment-avatar'].join(', ');
+var commentSelector = ['.comment-body > p', '.comment-body .email-fragment'].join(', ');
+
+function catPhoto(n, w, h) {
+  return 'https://placekitten.com/' + w + '/' + h + '?image=' + n;
+}
+
+function replaceUsers(el, store, userMap) {
+  var containers = el.querySelectorAll(containerSelector);
+
+  [].concat(_toConsumableArray(containers)).forEach(function (container) {
+    var author = container.querySelectorAll(authorSelector)[0];
+    var avatar = container.querySelectorAll(avatarSelector)[0];
+    var comments = container.querySelectorAll(commentSelector);
+
+    if (!author) return;
+
+    var username = author.textContent || author.getAttribute('aria-label');
+
+    if (username in userMap) {
+      var uData = userMap[username];
+      author.textContent = uData.name;
+
+      if (avatar) {
+        avatar.src = uData.avatar(avatar.width, avatar.height);
+      }
+
+      if (comments && store.replaceText) {
+        [].forEach.call(comments, function (comment) {
+          comment.textContent = (0, _loremIpsum2['default'])({ units: 'paragraphs', words: catWords });
+        });
+      }
+    }
+  });
+}
+
+chrome.storage.local.get(null, function (store) {
+  var userMap = {};
+
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = store.users[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var u = _step.value;
+
+      var n = Math.floor(Math.random() * 15) + 1;
+      var avatar = catPhoto.bind(null, n);
+
+      userMap[u] = {
+        name: _catNames2['default'].random(),
+        avatar: avatar
+      };
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator['return']) {
+        _iterator['return']();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  replaceUsers(document, store, userMap);
+
+  var pjax = document.querySelector('[data-pjax-container]');
+
+  if (pjax) {
+    (0, _mutationSummary2['default'])({ rootNode: pjax, queries: [{ all: true }], callback: function callback(summaries) {
+        var summary = summaries[0];
+        summary.added.forEach(function (el) {
+          if (el.parentNode === pjax && el.querySelectorAll) {
+            replaceUsers(el, store, userMap);
+          }
+        });
+      } });
+  }
+});
 
 },{"cat-names":3,"lorem-ipsum":8,"mutation-summary":9}],2:[function(require,module,exports){
 module.exports=[
@@ -106,25 +213,1942 @@ module.exports=[
 ]
 
 },{}],3:[function(require,module,exports){
-"use strict";var uniqueRandomArray=require("unique-random-array"),catNames=require("./cat-names.json");exports.all=catNames,exports.random=uniqueRandomArray(catNames);
+'use strict';
+var uniqueRandomArray = require('unique-random-array');
+var catNames = require('./cat-names.json');
+
+exports.all = catNames;
+exports.random = uniqueRandomArray(catNames);
 
 },{"./cat-names.json":2,"unique-random-array":4}],4:[function(require,module,exports){
-"use strict";var uniqueRandom=require("unique-random");module.exports=function(n){var u=uniqueRandom(0,n.length-1);return function(){return n[u()]}};
+'use strict';
+var uniqueRandom = require('unique-random');
+
+module.exports = function (arr) {
+	var rand = uniqueRandom(0, arr.length - 1);
+
+	return function () {
+		return arr[rand()];
+	};
+};
 
 },{"unique-random":5}],5:[function(require,module,exports){
-"use strict";module.exports=function(r,t){var n;return function o(){var u=Math.floor(Math.random()*(t-r+1)+r);return n=u===n&&r!==t?o():u}};
+'use strict';
+module.exports = function (min, max) {
+	var prev;
+	return function rand() {
+		var num = Math.floor(Math.random() * (max - min + 1) + min);
+		return prev = num === prev && min !== max ? rand() : num;
+	};
+};
 
 },{}],6:[function(require,module,exports){
-exports.endianness=function(){return"LE"},exports.hostname=function(){return"undefined"!=typeof location?location.hostname:""},exports.loadavg=function(){return[]},exports.uptime=function(){return 0},exports.freemem=function(){return Number.MAX_VALUE},exports.totalmem=function(){return Number.MAX_VALUE},exports.cpus=function(){return[]},exports.type=function(){return"Browser"},exports.release=function(){return"undefined"!=typeof navigator?navigator.appVersion:""},exports.networkInterfaces=exports.getNetworkInterfaces=function(){return{}},exports.arch=function(){return"javascript"},exports.platform=function(){return"browser"},exports.tmpdir=exports.tmpDir=function(){return"/tmp"},exports.EOL="\n";
+exports.endianness = function () { return 'LE' };
+
+exports.hostname = function () {
+    if (typeof location !== 'undefined') {
+        return location.hostname
+    }
+    else return '';
+};
+
+exports.loadavg = function () { return [] };
+
+exports.uptime = function () { return 0 };
+
+exports.freemem = function () {
+    return Number.MAX_VALUE;
+};
+
+exports.totalmem = function () {
+    return Number.MAX_VALUE;
+};
+
+exports.cpus = function () { return [] };
+
+exports.type = function () { return 'Browser' };
+
+exports.release = function () {
+    if (typeof navigator !== 'undefined') {
+        return navigator.appVersion;
+    }
+    return '';
+};
+
+exports.networkInterfaces
+= exports.getNetworkInterfaces
+= function () { return {} };
+
+exports.arch = function () { return 'javascript' };
+
+exports.platform = function () { return 'browser' };
+
+exports.tmpdir = exports.tmpDir = function () {
+    return '/tmp';
+};
+
+exports.EOL = '\n';
 
 },{}],7:[function(require,module,exports){
-var dictionary={words:["ad","adipisicing","aliqua","aliquip","amet","anim","aute","cillum","commodo","consectetur","consequat","culpa","cupidatat","deserunt","do","dolor","dolore","duis","ea","eiusmod","elit","enim","esse","est","et","eu","ex","excepteur","exercitation","fugiat","id","in","incididunt","ipsum","irure","labore","laboris","laborum","Lorem","magna","minim","mollit","nisi","non","nostrud","nulla","occaecat","officia","pariatur","proident","qui","quis","reprehenderit","sint","sit","sunt","tempor","ullamco","ut","velit","veniam","voluptate"]};module.exports=dictionary;
+var dictionary = {
+  words: [
+    'ad',
+    'adipisicing',
+    'aliqua',
+    'aliquip',
+    'amet',
+    'anim',
+    'aute',
+    'cillum',
+    'commodo',
+    'consectetur',
+    'consequat',
+    'culpa',
+    'cupidatat',
+    'deserunt',
+    'do',
+    'dolor',
+    'dolore',
+    'duis',
+    'ea',
+    'eiusmod',
+    'elit',
+    'enim',
+    'esse',
+    'est',
+    'et',
+    'eu',
+    'ex',
+    'excepteur',
+    'exercitation',
+    'fugiat',
+    'id',
+    'in',
+    'incididunt',
+    'ipsum',
+    'irure',
+    'labore',
+    'laboris',
+    'laborum',
+    'Lorem',
+    'magna',
+    'minim',
+    'mollit',
+    'nisi',
+    'non',
+    'nostrud',
+    'nulla',
+    'occaecat',
+    'officia',
+    'pariatur',
+    'proident',
+    'qui',
+    'quis',
+    'reprehenderit',
+    'sint',
+    'sit',
+    'sunt',
+    'tempor',
+    'ullamco',
+    'ut',
+    'velit',
+    'veniam',
+    'voluptate'  
+  ]
+};
 
+module.exports = dictionary;
 },{}],8:[function(require,module,exports){
-function simplePluralize(n){return-1===n.indexOf("s",n.length-1)?n+"s":n}var generator=function(){var n=arguments.length?arguments[0]:{},e=n.count||1,r=n.units||"sentences",a=n.sentenceLowerBound||5,i=n.sentenceUpperBound||15,t=n.paragraphLowerBound||3,o=n.paragraphUpperBound||7,s=n.format||"plain",m=n.words||require("./dictionary").words,u=n.random||Math.random,c=n.suffix||require("os").EOL;r=simplePluralize(r.toLowerCase());var l=function(n,e){return Math.floor(u()*(e-n+1)+n)},g=function(n){return n[l(0,n.length-1)]},p=function(n,e,r){for(var a="",i={min:0,max:l(e,r)};i.min<i.max;)a=a+" "+g(n),i.min=i.min+1;return a.length&&(a=a.slice(1),a=a.charAt(0).toUpperCase()+a.slice(1)),a},f=function(n,e,r,a,i){for(var t="",o={min:0,max:l(e,r)};o.min<o.max;)t=t+". "+p(n,a,i),o.min=o.min+1;return t.length&&(t=t.slice(2),t+="."),t},d={min:0,max:e},h="";for("html"==s&&(openingTag="<p>",closingTag="</p>");d.min<d.max;){switch(r.toLowerCase()){case"words":h=h+" "+g(m);break;case"sentences":h=h+". "+p(m,a,i);break;case"paragraphs":var x=f(m,t,o,a,i);"html"==s?(x=openingTag+x+closingTag,d.min<d.max-1&&(x+=c)):d.min<d.max-1&&(x=x+c+c),h+=x}d.min=d.min+1}if(h.length){var w=0;0==h.indexOf(". ")?w=2:(0==h.indexOf(".")||0==h.indexOf(" "))&&(w=1),h=h.slice(w),"sentences"==r&&(h+=".")}return h};module.exports=generator;
+var generator = function() {
+  var options = (arguments.length) ? arguments[0] : {}
+    , count = options.count || 1
+    , units = options.units || 'sentences'
+    , sentenceLowerBound = options.sentenceLowerBound || 5
+    , sentenceUpperBound = options.sentenceUpperBound || 15
+	  , paragraphLowerBound = options.paragraphLowerBound || 3
+	  , paragraphUpperBound = options.paragraphUpperBound || 7
+	  , format = options.format || 'plain'
+    , words = options.words || require('./dictionary').words
+    , random = options.random || Math.random
+    , suffix = options.suffix || require('os').EOL;
+
+  units = simplePluralize(units.toLowerCase());
+
+  var randomInteger = function(min, max) {
+    return Math.floor(random() * (max - min + 1) + min);
+  };
+
+  var randomWord = function(words) {
+    return words[randomInteger(0, words.length - 1)];
+  };
+
+  var randomSentence = function(words, lowerBound, upperBound) {
+    var sentence = ''
+      , bounds = {min: 0, max: randomInteger(lowerBound, upperBound)};
+
+    while (bounds.min < bounds.max) {
+      sentence = sentence + ' ' + randomWord(words);
+      bounds.min = bounds.min + 1;
+    }
+
+    if (sentence.length) {
+      sentence = sentence.slice(1);
+      sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
+    }
+
+    return sentence;
+  };
+
+  var randomParagraph = function(words, lowerBound, upperBound, sentenceLowerBound, sentenceUpperBound) {
+    var paragraph = ''
+      , bounds = {min: 0, max: randomInteger(lowerBound, upperBound)};
+
+    while (bounds.min < bounds.max) {
+      paragraph = paragraph + '. ' + randomSentence(words, sentenceLowerBound, sentenceUpperBound);
+      bounds.min = bounds.min + 1;
+    }
+
+    if (paragraph.length) {
+      paragraph = paragraph.slice(2);
+      paragraph = paragraph + '.';
+    }
+
+    return paragraph;
+  }
+
+  var iter = 0
+    , bounds = {min: 0, max: count}
+    , string = ''
+    , prefix = '';
+
+  if (format == 'html') {
+    openingTag = '<p>';
+    closingTag = '</p>';
+  }
+
+  while (bounds.min < bounds.max) {
+    switch (units.toLowerCase()) {
+      case 'words':
+        string = string + ' ' + randomWord(words);
+        break;
+      case 'sentences':
+        string = string + '. ' + randomSentence(words, sentenceLowerBound, sentenceUpperBound);
+        break;
+      case 'paragraphs':
+        var nextString = randomParagraph(words, paragraphLowerBound, paragraphUpperBound, sentenceLowerBound, sentenceUpperBound);
+
+        if (format == 'html') {
+          nextString = openingTag + nextString + closingTag;
+          if (bounds.min < bounds.max - 1) {
+            nextString = nextString + suffix; // Each paragraph on a new line
+          }
+        } else if (bounds.min < bounds.max - 1) {
+          nextString = nextString + suffix + suffix; // Double-up the EOL character to make distinct paragraphs, like carriage return
+        }
+
+        string = string + nextString;
+
+        break;
+    }
+
+    bounds.min = bounds.min + 1;
+  }
+
+  if (string.length) {
+    var pos = 0;
+
+    if (string.indexOf('. ') == 0) {
+      pos = 2;
+    } else if (string.indexOf('.') == 0 || string.indexOf(' ') == 0) {
+      pos = 1;
+    }
+
+    string = string.slice(pos);
+
+    if (units == 'sentences') {
+      string = string + '.';
+    }
+  }
+
+  return string;
+};
+
+function simplePluralize(string) {
+  if (string.indexOf('s', string.length - 1) === -1) {
+    return string + 's';
+  }
+  return string;
+}
+
+module.exports = generator;
 
 },{"./dictionary":7,"os":6}],9:[function(require,module,exports){
-function enteredOrExited(e){return 1===e||5===e}function escapeQuotes(e){return'"'+e.replace(/"/,'\\"')+'"'}function validateAttribute(e){if("string"!=typeof e)throw Error("Invalid request opion. attribute must be a non-zero length string.");if(e=e.trim(),!e)throw Error("Invalid request opion. attribute must be a non-zero length string.");if(!e.match(attributeFilterPattern))throw Error("Invalid request option. invalid attribute name: "+e);return e}function validateElementAttributes(e){if(!e.trim().length)throw Error("Invalid request option: elementAttributes must contain at least one attribute.");for(var t={},r={},a=e.split(/\s+/),i=0;i<a.length;i++){var n=a[i];if(n){var n=validateAttribute(n),o=n.toLowerCase();if(t[o])throw Error("Invalid request option: observing multiple case variations of the same attribute is not supported.");r[n]=!0,t[o]=!0}}return Object.keys(r)}function elementFilterAttributes(e){var t={};return e.forEach(function(e){e.qualifiers.forEach(function(e){t[e.attrName]=!0})}),Object.keys(t)}var __extends=this.__extends||function(e,t){function r(){this.constructor=e}for(var a in t)t.hasOwnProperty(a)&&(e[a]=t[a]);r.prototype=t.prototype,e.prototype=new r},MutationObserverCtor;if(MutationObserverCtor="undefined"!=typeof WebKitMutationObserver?WebKitMutationObserver:MutationObserver,void 0===MutationObserverCtor)throw console.error("DOM Mutation Observers are required."),console.error("https://developer.mozilla.org/en-US/docs/DOM/MutationObserver"),Error("DOM Mutation Observers are required");var NodeMap=function(){function e(){this.nodes=[],this.values=[]}return e.prototype.isIndex=function(e){return+e===e>>>0},e.prototype.nodeId=function(t){var r=t[e.ID_PROP];return r||(r=t[e.ID_PROP]=e.nextId_++),r},e.prototype.set=function(e,t){var r=this.nodeId(e);this.nodes[r]=e,this.values[r]=t},e.prototype.get=function(e){var t=this.nodeId(e);return this.values[t]},e.prototype.has=function(e){return this.nodeId(e)in this.nodes},e.prototype["delete"]=function(e){var t=this.nodeId(e);delete this.nodes[t],this.values[t]=void 0},e.prototype.keys=function(){var e=[];for(var t in this.nodes)this.isIndex(t)&&e.push(this.nodes[t]);return e},e.ID_PROP="__mutation_summary_node_map_id__",e.nextId_=1,e}(),Movement;!function(e){e[e.STAYED_OUT=0]="STAYED_OUT",e[e.ENTERED=1]="ENTERED",e[e.STAYED_IN=2]="STAYED_IN",e[e.REPARENTED=3]="REPARENTED",e[e.REORDERED=4]="REORDERED",e[e.EXITED=5]="EXITED"}(Movement||(Movement={}));var NodeChange=function(){function e(e,t,r,a,i,n,o,s){"undefined"==typeof t&&(t=!1),"undefined"==typeof r&&(r=!1),"undefined"==typeof a&&(a=!1),"undefined"==typeof i&&(i=null),"undefined"==typeof n&&(n=!1),"undefined"==typeof o&&(o=null),"undefined"==typeof s&&(s=null),this.node=e,this.childList=t,this.attributes=r,this.characterData=a,this.oldParentNode=i,this.added=n,this.attributeOldValues=o,this.characterDataOldValue=s,this.isCaseInsensitive=this.node.nodeType===Node.ELEMENT_NODE&&this.node instanceof HTMLElement&&this.node.ownerDocument instanceof HTMLDocument}return e.prototype.getAttributeOldValue=function(e){return this.attributeOldValues?(this.isCaseInsensitive&&(e=e.toLowerCase()),this.attributeOldValues[e]):void 0},e.prototype.getAttributeNamesMutated=function(){var e=[];if(!this.attributeOldValues)return e;for(var t in this.attributeOldValues)e.push(t);return e},e.prototype.attributeMutated=function(e,t){this.attributes=!0,this.attributeOldValues=this.attributeOldValues||{},e in this.attributeOldValues||(this.attributeOldValues[e]=t)},e.prototype.characterDataMutated=function(e){this.characterData||(this.characterData=!0,this.characterDataOldValue=e)},e.prototype.removedFromParent=function(e){this.childList=!0,this.added||this.oldParentNode?this.added=!1:this.oldParentNode=e},e.prototype.insertedIntoParent=function(){this.childList=!0,this.added=!0},e.prototype.getOldParent=function(){if(this.childList){if(this.oldParentNode)return this.oldParentNode;if(this.added)return null}return this.node.parentNode},e}(),ChildListChange=function(){function e(){this.added=new NodeMap,this.removed=new NodeMap,this.maybeMoved=new NodeMap,this.oldPrevious=new NodeMap,this.moved=void 0}return e}(),TreeChanges=function(e){function t(t,r){e.call(this),this.rootNode=t,this.reachableCache=void 0,this.wasReachableCache=void 0,this.anyParentsChanged=!1,this.anyAttributesChanged=!1,this.anyCharacterDataChanged=!1;for(var a=0;a<r.length;a++){var i=r[a];switch(i.type){case"childList":this.anyParentsChanged=!0;for(var n=0;n<i.removedNodes.length;n++){var o=i.removedNodes[n];this.getChange(o).removedFromParent(i.target)}for(var n=0;n<i.addedNodes.length;n++){var o=i.addedNodes[n];this.getChange(o).insertedIntoParent()}break;case"attributes":this.anyAttributesChanged=!0;var s=this.getChange(i.target);s.attributeMutated(i.attributeName,i.oldValue);break;case"characterData":this.anyCharacterDataChanged=!0;var s=this.getChange(i.target);s.characterDataMutated(i.oldValue)}}}return __extends(t,e),t.prototype.getChange=function(e){var t=this.get(e);return t||(t=new NodeChange(e),this.set(e,t)),t},t.prototype.getOldParent=function(e){var t=this.get(e);return t?t.getOldParent():e.parentNode},t.prototype.getIsReachable=function(e){if(e===this.rootNode)return!0;if(!e)return!1;this.reachableCache=this.reachableCache||new NodeMap;var t=this.reachableCache.get(e);return void 0===t&&(t=this.getIsReachable(e.parentNode),this.reachableCache.set(e,t)),t},t.prototype.getWasReachable=function(e){if(e===this.rootNode)return!0;if(!e)return!1;this.wasReachableCache=this.wasReachableCache||new NodeMap;var t=this.wasReachableCache.get(e);return void 0===t&&(t=this.getWasReachable(this.getOldParent(e)),this.wasReachableCache.set(e,t)),t},t.prototype.reachabilityChange=function(e){return this.getIsReachable(e)?this.getWasReachable(e)?2:1:this.getWasReachable(e)?5:0},t}(NodeMap),MutationProjection=function(){function e(e,t,r,a,i){this.rootNode=e,this.mutations=t,this.selectors=r,this.calcReordered=a,this.calcOldPreviousSibling=i,this.treeChanges=new TreeChanges(e,t),this.entered=[],this.exited=[],this.stayedIn=new NodeMap,this.visited=new NodeMap,this.childListChangeMap=void 0,this.characterDataOnly=void 0,this.matchCache=void 0,this.processMutations()}return e.prototype.processMutations=function(){if(this.treeChanges.anyParentsChanged||this.treeChanges.anyAttributesChanged)for(var e=this.treeChanges.keys(),t=0;t<e.length;t++)this.visitNode(e[t],void 0)},e.prototype.visitNode=function(e,t){if(!this.visited.has(e)){this.visited.set(e,!0);var r=this.treeChanges.get(e),a=t;if((r&&r.childList||void 0==a)&&(a=this.treeChanges.reachabilityChange(e)),0!==a){if(this.matchabilityChange(e),1===a)this.entered.push(e);else if(5===a)this.exited.push(e),this.ensureHasOldPreviousSiblingIfNeeded(e);else if(2===a){var i=2;r&&r.childList&&(r.oldParentNode!==e.parentNode?(i=3,this.ensureHasOldPreviousSiblingIfNeeded(e)):this.calcReordered&&this.wasReordered(e)&&(i=4)),this.stayedIn.set(e,i)}if(2!==a)for(var n=e.firstChild;n;n=n.nextSibling)this.visitNode(n,a)}}},e.prototype.ensureHasOldPreviousSiblingIfNeeded=function(e){if(this.calcOldPreviousSibling){this.processChildlistChanges();var t=e.parentNode,r=this.treeChanges.get(e);r&&r.oldParentNode&&(t=r.oldParentNode);var a=this.childListChangeMap.get(t);a||(a=new ChildListChange,this.childListChangeMap.set(t,a)),a.oldPrevious.has(e)||a.oldPrevious.set(e,e.previousSibling)}},e.prototype.getChanged=function(e,t,r){this.selectors=t,this.characterDataOnly=r;for(var a=0;a<this.entered.length;a++){var i=this.entered[a],n=this.matchabilityChange(i);(1===n||2===n)&&e.added.push(i)}for(var o=this.stayedIn.keys(),a=0;a<o.length;a++){var i=o[a],n=this.matchabilityChange(i);if(1===n)e.added.push(i);else if(5===n)e.removed.push(i);else if(2===n&&(e.reparented||e.reordered)){var s=this.stayedIn.get(i);e.reparented&&3===s?e.reparented.push(i):e.reordered&&4===s&&e.reordered.push(i)}}for(var a=0;a<this.exited.length;a++){var i=this.exited[a],n=this.matchabilityChange(i);(5===n||2===n)&&e.removed.push(i)}},e.prototype.getOldParentNode=function(e){var t=this.treeChanges.get(e);if(t&&t.childList)return t.oldParentNode?t.oldParentNode:null;var r=this.treeChanges.reachabilityChange(e);if(0===r||1===r)throw Error("getOldParentNode requested on invalid node.");return e.parentNode},e.prototype.getOldPreviousSibling=function(e){var t=e.parentNode,r=this.treeChanges.get(e);r&&r.oldParentNode&&(t=r.oldParentNode);var a=this.childListChangeMap.get(t);if(!a)throw Error("getOldPreviousSibling requested on invalid node.");return a.oldPrevious.get(e)},e.prototype.getOldAttribute=function(e,t){var r=this.treeChanges.get(e);if(!r||!r.attributes)throw Error("getOldAttribute requested on invalid node.");var a=r.getAttributeOldValue(t);if(void 0===a)throw Error("getOldAttribute requested for unchanged attribute name.");return a},e.prototype.attributeChangedNodes=function(e){if(!this.treeChanges.anyAttributesChanged)return{};var t,r;if(e){t={},r={};for(var a=0;a<e.length;a++){var i=e[a];t[i]=!0,r[i.toLowerCase()]=i}}for(var n={},o=this.treeChanges.keys(),a=0;a<o.length;a++){var s=o[a],h=this.treeChanges.get(s);if(h.attributes&&2===this.treeChanges.reachabilityChange(s)&&2===this.matchabilityChange(s))for(var u=s,d=h.getAttributeNamesMutated(),c=0;c<d.length;c++){var i=d[c];if(!t||t[i]||h.isCaseInsensitive&&r[i]){var l=h.getAttributeOldValue(i);l!==u.getAttribute(i)&&(r&&h.isCaseInsensitive&&(i=r[i]),n[i]=n[i]||[],n[i].push(u))}}}return n},e.prototype.getOldCharacterData=function(e){var t=this.treeChanges.get(e);if(!t||!t.characterData)throw Error("getOldCharacterData requested on invalid node.");return t.characterDataOldValue},e.prototype.getCharacterDataChanged=function(){if(!this.treeChanges.anyCharacterDataChanged)return[];for(var e=this.treeChanges.keys(),t=[],r=0;r<e.length;r++){var a=e[r];if(2===this.treeChanges.reachabilityChange(a)){var i=this.treeChanges.get(a);i.characterData&&a.textContent!=i.characterDataOldValue&&t.push(a)}}return t},e.prototype.computeMatchabilityChange=function(e,t){this.matchCache||(this.matchCache=[]),this.matchCache[e.uid]||(this.matchCache[e.uid]=new NodeMap);var r=this.matchCache[e.uid],a=r.get(t);return void 0===a&&(a=e.matchabilityChange(t,this.treeChanges.get(t)),r.set(t,a)),a},e.prototype.matchabilityChange=function(e){var t=this;if(this.characterDataOnly)switch(e.nodeType){case Node.COMMENT_NODE:case Node.TEXT_NODE:return 2;default:return 0}if(!this.selectors)return 2;if(e.nodeType!==Node.ELEMENT_NODE)return 0;for(var r=e,a=this.selectors.map(function(e){return t.computeMatchabilityChange(e,r)}),i=0,n=0;2!==i&&n<a.length;){switch(a[n]){case 2:i=2;break;case 1:i=5===i?2:1;break;case 5:i=1===i?2:5}n++}return i},e.prototype.getChildlistChange=function(e){var t=this.childListChangeMap.get(e);return t||(t=new ChildListChange,this.childListChangeMap.set(e,t)),t},e.prototype.processChildlistChanges=function(){function e(e,t){!e||a.oldPrevious.has(e)||a.added.has(e)||a.maybeMoved.has(e)||t&&(a.added.has(t)||a.maybeMoved.has(t))||a.oldPrevious.set(e,t)}if(!this.childListChangeMap){this.childListChangeMap=new NodeMap;for(var t=0;t<this.mutations.length;t++){var r=this.mutations[t];if("childList"==r.type&&(2===this.treeChanges.reachabilityChange(r.target)||this.calcOldPreviousSibling)){for(var a=this.getChildlistChange(r.target),i=r.previousSibling,n=0;n<r.removedNodes.length;n++){var o=r.removedNodes[n];e(o,i),a.added.has(o)?a.added["delete"](o):(a.removed.set(o,!0),a.maybeMoved["delete"](o)),i=o}e(r.nextSibling,i);for(var n=0;n<r.addedNodes.length;n++){var o=r.addedNodes[n];a.removed.has(o)?(a.removed["delete"](o),a.maybeMoved.set(o,!0)):a.added.set(o,!0)}}}}},e.prototype.wasReordered=function(e){function t(e){if(!e)return!1;if(!o.maybeMoved.has(e))return!1;var t=o.moved.get(e);return void 0!==t?t:(s.has(e)?t=!0:(s.set(e,!0),t=a(e)!==r(e)),s.has(e)?(s["delete"](e),o.moved.set(e,t)):t=o.moved.get(e),t)}function r(e){var a=h.get(e);if(void 0!==a)return a;for(a=o.oldPrevious.get(e);a&&(o.removed.has(a)||t(a));)a=r(a);return void 0===a&&(a=e.previousSibling),h.set(e,a),a}function a(e){if(u.has(e))return u.get(e);for(var r=e.previousSibling;r&&(o.added.has(r)||t(r));)r=r.previousSibling;return u.set(e,r),r}if(!this.treeChanges.anyParentsChanged)return!1;this.processChildlistChanges();var i=e.parentNode,n=this.treeChanges.get(e);n&&n.oldParentNode&&(i=n.oldParentNode);var o=this.childListChangeMap.get(i);if(!o)return!1;if(o.moved)return o.moved.get(e);o.moved=new NodeMap;var s=new NodeMap,h=new NodeMap,u=new NodeMap;return o.maybeMoved.keys().forEach(t),o.moved.get(e)},e}(),Summary=function(){function e(e,t){var r=this;if(this.projection=e,this.added=[],this.removed=[],this.reparented=t.all||t.element?[]:void 0,this.reordered=t.all?[]:void 0,e.getChanged(this,t.elementFilter,t.characterData),t.all||t.attribute||t.attributeList){var a=t.attribute?[t.attribute]:t.attributeList,i=e.attributeChangedNodes(a);t.attribute?this.valueChanged=i[t.attribute]||[]:(this.attributeChanged=i,t.attributeList&&t.attributeList.forEach(function(e){r.attributeChanged.hasOwnProperty(e)||(r.attributeChanged[e]=[])}))}if(t.all||t.characterData){var n=e.getCharacterDataChanged();t.characterData?this.valueChanged=n:this.characterDataChanged=n}this.reordered&&(this.getOldPreviousSibling=e.getOldPreviousSibling.bind(e))}return e.prototype.getOldParentNode=function(e){return this.projection.getOldParentNode(e)},e.prototype.getOldAttribute=function(e,t){return this.projection.getOldAttribute(e,t)},e.prototype.getOldCharacterData=function(e){return this.projection.getOldCharacterData(e)},e.prototype.getOldPreviousSibling=function(e){return this.projection.getOldPreviousSibling(e)},e}(),validNameInitialChar=/[a-zA-Z_]+/,validNameNonInitialChar=/[a-zA-Z0-9_\-]+/,Qualifier=function(){function e(){}return e.prototype.matches=function(e){if(null===e)return!1;if(void 0===this.attrValue)return!0;if(!this.contains)return this.attrValue==e;for(var t=e.split(" "),r=0;r<t.length;r++)if(this.attrValue===t[r])return!0;return!1},e.prototype.toString=function(){return"class"===this.attrName&&this.contains?"."+this.attrValue:"id"!==this.attrName||this.contains?this.contains?"["+this.attrName+"~="+escapeQuotes(this.attrValue)+"]":"attrValue"in this?"["+this.attrName+"="+escapeQuotes(this.attrValue)+"]":"["+this.attrName+"]":"#"+this.attrValue},e}(),Selector=function(){function e(){this.uid=e.nextUid++,this.qualifiers=[]}return Object.defineProperty(e.prototype,"caseInsensitiveTagName",{get:function(){return this.tagName.toUpperCase()},enumerable:!0,configurable:!0}),Object.defineProperty(e.prototype,"selectorString",{get:function(){return this.tagName+this.qualifiers.join("")},enumerable:!0,configurable:!0}),e.prototype.isMatching=function(t){return t[e.matchesSelector](this.selectorString)},e.prototype.wasMatching=function(e,t,r){if(!t||!t.attributes)return r;var a=t.isCaseInsensitive?this.caseInsensitiveTagName:this.tagName;if("*"!==a&&a!==e.tagName)return!1;for(var i=[],n=!1,o=0;o<this.qualifiers.length;o++){var s=this.qualifiers[o],h=t.getAttributeOldValue(s.attrName);i.push(h),n=n||void 0!==h}if(!n)return r;for(var o=0;o<this.qualifiers.length;o++){var s=this.qualifiers[o],h=i[o];if(void 0===h&&(h=e.getAttribute(s.attrName)),!s.matches(h))return!1}return!0},e.prototype.matchabilityChange=function(e,t){var r=this.isMatching(e);return r?this.wasMatching(e,t,r)?2:1:this.wasMatching(e,t,r)?5:0},e.parseSelectors=function(t){function r(){i&&(n&&(i.qualifiers.push(n),n=void 0),s.push(i)),i=new e}function a(){n&&i.qualifiers.push(n),n=new Qualifier}for(var i,n,o,s=[],h=/\s/,u="Invalid or unsupported selector syntax.",d=1,c=2,l=3,f=4,p=5,v=6,g=7,b=8,m=9,y=10,C=11,N=12,O=13,w=14,k=d,E=0;E<t.length;){var M=t[E++];switch(k){case d:if(M.match(validNameInitialChar)){r(),i.tagName=M,k=c;break}if("*"==M){r(),i.tagName="*",k=l;break}if("."==M){r(),a(),i.tagName="*",n.attrName="class",n.contains=!0,k=f;break}if("#"==M){r(),a(),i.tagName="*",n.attrName="id",k=f;break}if("["==M){r(),a(),i.tagName="*",n.attrName="",k=v;break}if(M.match(h))break;throw Error(u);case c:if(M.match(validNameNonInitialChar)){i.tagName+=M;break}if("."==M){a(),n.attrName="class",n.contains=!0,k=f;break}if("#"==M){a(),n.attrName="id",k=f;break}if("["==M){a(),n.attrName="",k=v;break}if(M.match(h)){k=w;break}if(","==M){k=d;break}throw Error(u);case l:if("."==M){a(),n.attrName="class",n.contains=!0,k=f;break}if("#"==M){a(),n.attrName="id",k=f;break}if("["==M){a(),n.attrName="",k=v;break}if(M.match(h)){k=w;break}if(","==M){k=d;break}throw Error(u);case f:if(M.match(validNameInitialChar)){n.attrValue=M,k=p;break}throw Error(u);case p:if(M.match(validNameNonInitialChar)){n.attrValue+=M;break}if("."==M){a(),n.attrName="class",n.contains=!0,k=f;break}if("#"==M){a(),n.attrName="id",k=f;break}if("["==M){a(),k=v;break}if(M.match(h)){k=w;break}if(","==M){k=d;break}throw Error(u);case v:if(M.match(validNameInitialChar)){n.attrName=M,k=g;break}if(M.match(h))break;throw Error(u);case g:if(M.match(validNameNonInitialChar)){n.attrName+=M;break}if(M.match(h)){k=b;break}if("~"==M){n.contains=!0,k=m;break}if("="==M){n.attrValue="",k=C;break}if("]"==M){k=l;break}throw Error(u);case b:if("~"==M){n.contains=!0,k=m;break}if("="==M){n.attrValue="",k=C;break}if("]"==M){k=l;break}if(M.match(h))break;throw Error(u);case m:if("="==M){n.attrValue="",k=C;break}throw Error(u);case y:if("]"==M){k=l;break}if(M.match(h))break;throw Error(u);case C:if(M.match(h))break;if('"'==M||"'"==M){o=M,k=O;break}n.attrValue+=M,k=N;break;case N:if(M.match(h)){k=y;break}if("]"==M){k=l;break}if("'"==M||'"'==M)throw Error(u);n.attrValue+=M;break;case O:if(M==o){k=y;break}n.attrValue+=M;break;case w:if(M.match(h))break;if(","==M){k=d;break}throw Error(u)}}switch(k){case d:case c:case l:case p:case w:r();break;default:throw Error(u)}if(!s.length)throw Error(u);return s},e.nextUid=1,e.matchesSelector=function(){var e=document.createElement("div");return"function"==typeof e.webkitMatchesSelector?"webkitMatchesSelector":"function"==typeof e.mozMatchesSelector?"mozMatchesSelector":"function"==typeof e.msMatchesSelector?"msMatchesSelector":"matchesSelector"}(),e}(),attributeFilterPattern=/^([a-zA-Z:_]+[a-zA-Z0-9_\-:\.]*)$/,MutationSummary=function(){function e(t){var r=this;this.connected=!1,this.options=e.validateOptions(t),this.observerOptions=e.createObserverOptions(this.options.queries),this.root=this.options.rootNode,this.callback=this.options.callback,this.elementFilter=Array.prototype.concat.apply([],this.options.queries.map(function(e){return e.elementFilter?e.elementFilter:[]})),this.elementFilter.length||(this.elementFilter=void 0),this.calcReordered=this.options.queries.some(function(e){return e.all}),this.queryValidators=[],e.createQueryValidator&&(this.queryValidators=this.options.queries.map(function(t){return e.createQueryValidator(r.root,t)})),this.observer=new MutationObserverCtor(function(e){r.observerCallback(e)}),this.reconnect()}return e.createObserverOptions=function(e){function t(e){if(!a.attributes||r){if(a.attributes=!0,a.attributeOldValue=!0,!e)return void(r=void 0);r=r||{},e.forEach(function(e){r[e]=!0,r[e.toLowerCase()]=!0})}}var r,a={childList:!0,subtree:!0};return e.forEach(function(e){if(e.characterData)return a.characterData=!0,void(a.characterDataOldValue=!0);if(e.all)return t(),a.characterData=!0,void(a.characterDataOldValue=!0);if(e.attribute)return void t([e.attribute.trim()]);var r=elementFilterAttributes(e.elementFilter).concat(e.attributeList||[]);r.length&&t(r)}),r&&(a.attributeFilter=Object.keys(r)),a},e.validateOptions=function(t){for(var r in t)if(!(r in e.optionKeys))throw Error("Invalid option: "+r);if("function"!=typeof t.callback)throw Error("Invalid options: callback is required and must be a function");if(!t.queries||!t.queries.length)throw Error("Invalid options: queries must contain at least one query request object.");for(var a={callback:t.callback,rootNode:t.rootNode||document,observeOwnChanges:!!t.observeOwnChanges,oldPreviousSibling:!!t.oldPreviousSibling,queries:[]},i=0;i<t.queries.length;i++){var n=t.queries[i];if(n.all){if(Object.keys(n).length>1)throw Error("Invalid request option. all has no options.");a.queries.push({all:!0})}else if("attribute"in n){var o={attribute:validateAttribute(n.attribute)};if(o.elementFilter=Selector.parseSelectors("*["+o.attribute+"]"),Object.keys(n).length>1)throw Error("Invalid request option. attribute has no options.");a.queries.push(o)}else if("element"in n){var s=Object.keys(n).length,o={element:n.element,elementFilter:Selector.parseSelectors(n.element)};if(n.hasOwnProperty("elementAttributes")&&(o.attributeList=validateElementAttributes(n.elementAttributes),s--),s>1)throw Error("Invalid request option. element only allows elementAttributes option.");a.queries.push(o)}else{if(!n.characterData)throw Error("Invalid request option. Unknown query request.");if(Object.keys(n).length>1)throw Error("Invalid request option. characterData has no options.");a.queries.push({characterData:!0})}}return a},e.prototype.createSummaries=function(e){if(!e||!e.length)return[];for(var t=new MutationProjection(this.root,e,this.elementFilter,this.calcReordered,this.options.oldPreviousSibling),r=[],a=0;a<this.options.queries.length;a++)r.push(new Summary(t,this.options.queries[a]));return r},e.prototype.checkpointQueryValidators=function(){this.queryValidators.forEach(function(e){e&&e.recordPreviousState()})},e.prototype.runQueryValidators=function(e){this.queryValidators.forEach(function(t,r){t&&t.validate(e[r])})},e.prototype.changesToReport=function(e){return e.some(function(e){var t=["added","removed","reordered","reparented","valueChanged","characterDataChanged"];if(t.some(function(t){return e[t]&&e[t].length}))return!0;if(e.attributeChanged){var r=Object.keys(e.attributeChanged),a=r.some(function(t){return!!e.attributeChanged[t].length});if(a)return!0}return!1})},e.prototype.observerCallback=function(e){this.options.observeOwnChanges||this.observer.disconnect();var t=this.createSummaries(e);this.runQueryValidators(t),this.options.observeOwnChanges&&this.checkpointQueryValidators(),this.changesToReport(t)&&this.callback(t),!this.options.observeOwnChanges&&this.connected&&(this.checkpointQueryValidators(),this.observer.observe(this.root,this.observerOptions))},e.prototype.reconnect=function(){if(this.connected)throw Error("Already connected");this.observer.observe(this.root,this.observerOptions),this.connected=!0,this.checkpointQueryValidators()},e.prototype.takeSummaries=function(){if(!this.connected)throw Error("Not connected");var e=this.createSummaries(this.observer.takeRecords());return this.changesToReport(e)?e:void 0},e.prototype.disconnect=function(){var e=this.takeSummaries();return this.observer.disconnect(),this.connected=!1,e},e.NodeMap=NodeMap,e.parseElementFilter=Selector.parseSelectors,e.optionKeys={callback:!0,queries:!0,rootNode:!0,oldPreviousSibling:!0,observeOwnChanges:!0},e}();module.exports=MutationSummary;
+// Copyright 2011 Google Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var MutationObserverCtor;
+if (typeof WebKitMutationObserver !== 'undefined')
+    MutationObserverCtor = WebKitMutationObserver;
+else
+    MutationObserverCtor = MutationObserver;
 
+if (MutationObserverCtor === undefined) {
+    console.error('DOM Mutation Observers are required.');
+    console.error('https://developer.mozilla.org/en-US/docs/DOM/MutationObserver');
+    throw Error('DOM Mutation Observers are required');
+}
+
+var NodeMap = (function () {
+    function NodeMap() {
+        this.nodes = [];
+        this.values = [];
+    }
+    NodeMap.prototype.isIndex = function (s) {
+        return +s === s >>> 0;
+    };
+
+    NodeMap.prototype.nodeId = function (node) {
+        var id = node[NodeMap.ID_PROP];
+        if (!id)
+            id = node[NodeMap.ID_PROP] = NodeMap.nextId_++;
+        return id;
+    };
+
+    NodeMap.prototype.set = function (node, value) {
+        var id = this.nodeId(node);
+        this.nodes[id] = node;
+        this.values[id] = value;
+    };
+
+    NodeMap.prototype.get = function (node) {
+        var id = this.nodeId(node);
+        return this.values[id];
+    };
+
+    NodeMap.prototype.has = function (node) {
+        return this.nodeId(node) in this.nodes;
+    };
+
+    NodeMap.prototype.delete = function (node) {
+        var id = this.nodeId(node);
+        delete this.nodes[id];
+        this.values[id] = undefined;
+    };
+
+    NodeMap.prototype.keys = function () {
+        var nodes = [];
+        for (var id in this.nodes) {
+            if (!this.isIndex(id))
+                continue;
+            nodes.push(this.nodes[id]);
+        }
+
+        return nodes;
+    };
+    NodeMap.ID_PROP = '__mutation_summary_node_map_id__';
+    NodeMap.nextId_ = 1;
+    return NodeMap;
+})();
+
+/**
+*  var reachableMatchableProduct = [
+*  //  STAYED_OUT,  ENTERED,     STAYED_IN,   EXITED
+*    [ STAYED_OUT,  STAYED_OUT,  STAYED_OUT,  STAYED_OUT ], // STAYED_OUT
+*    [ STAYED_OUT,  ENTERED,     ENTERED,     STAYED_OUT ], // ENTERED
+*    [ STAYED_OUT,  ENTERED,     STAYED_IN,   EXITED     ], // STAYED_IN
+*    [ STAYED_OUT,  STAYED_OUT,  EXITED,      EXITED     ]  // EXITED
+*  ];
+*/
+var Movement;
+(function (Movement) {
+    Movement[Movement["STAYED_OUT"] = 0] = "STAYED_OUT";
+    Movement[Movement["ENTERED"] = 1] = "ENTERED";
+    Movement[Movement["STAYED_IN"] = 2] = "STAYED_IN";
+    Movement[Movement["REPARENTED"] = 3] = "REPARENTED";
+    Movement[Movement["REORDERED"] = 4] = "REORDERED";
+    Movement[Movement["EXITED"] = 5] = "EXITED";
+})(Movement || (Movement = {}));
+
+function enteredOrExited(changeType) {
+    return changeType === 1 /* ENTERED */ || changeType === 5 /* EXITED */;
+}
+
+var NodeChange = (function () {
+    function NodeChange(node, childList, attributes, characterData, oldParentNode, added, attributeOldValues, characterDataOldValue) {
+        if (typeof childList === "undefined") { childList = false; }
+        if (typeof attributes === "undefined") { attributes = false; }
+        if (typeof characterData === "undefined") { characterData = false; }
+        if (typeof oldParentNode === "undefined") { oldParentNode = null; }
+        if (typeof added === "undefined") { added = false; }
+        if (typeof attributeOldValues === "undefined") { attributeOldValues = null; }
+        if (typeof characterDataOldValue === "undefined") { characterDataOldValue = null; }
+        this.node = node;
+        this.childList = childList;
+        this.attributes = attributes;
+        this.characterData = characterData;
+        this.oldParentNode = oldParentNode;
+        this.added = added;
+        this.attributeOldValues = attributeOldValues;
+        this.characterDataOldValue = characterDataOldValue;
+        this.isCaseInsensitive = this.node.nodeType === Node.ELEMENT_NODE && this.node instanceof HTMLElement && this.node.ownerDocument instanceof HTMLDocument;
+    }
+    NodeChange.prototype.getAttributeOldValue = function (name) {
+        if (!this.attributeOldValues)
+            return undefined;
+        if (this.isCaseInsensitive)
+            name = name.toLowerCase();
+        return this.attributeOldValues[name];
+    };
+
+    NodeChange.prototype.getAttributeNamesMutated = function () {
+        var names = [];
+        if (!this.attributeOldValues)
+            return names;
+        for (var name in this.attributeOldValues) {
+            names.push(name);
+        }
+        return names;
+    };
+
+    NodeChange.prototype.attributeMutated = function (name, oldValue) {
+        this.attributes = true;
+        this.attributeOldValues = this.attributeOldValues || {};
+
+        if (name in this.attributeOldValues)
+            return;
+
+        this.attributeOldValues[name] = oldValue;
+    };
+
+    NodeChange.prototype.characterDataMutated = function (oldValue) {
+        if (this.characterData)
+            return;
+        this.characterData = true;
+        this.characterDataOldValue = oldValue;
+    };
+
+    // Note: is it possible to receive a removal followed by a removal. This
+    // can occur if the removed node is added to an non-observed node, that
+    // node is added to the observed area, and then the node removed from
+    // it.
+    NodeChange.prototype.removedFromParent = function (parent) {
+        this.childList = true;
+        if (this.added || this.oldParentNode)
+            this.added = false;
+        else
+            this.oldParentNode = parent;
+    };
+
+    NodeChange.prototype.insertedIntoParent = function () {
+        this.childList = true;
+        this.added = true;
+    };
+
+    // An node's oldParent is
+    //   -its present parent, if its parentNode was not changed.
+    //   -null if the first thing that happened to it was an add.
+    //   -the node it was removed from if the first thing that happened to it
+    //      was a remove.
+    NodeChange.prototype.getOldParent = function () {
+        if (this.childList) {
+            if (this.oldParentNode)
+                return this.oldParentNode;
+            if (this.added)
+                return null;
+        }
+
+        return this.node.parentNode;
+    };
+    return NodeChange;
+})();
+
+var ChildListChange = (function () {
+    function ChildListChange() {
+        this.added = new NodeMap();
+        this.removed = new NodeMap();
+        this.maybeMoved = new NodeMap();
+        this.oldPrevious = new NodeMap();
+        this.moved = undefined;
+    }
+    return ChildListChange;
+})();
+
+var TreeChanges = (function (_super) {
+    __extends(TreeChanges, _super);
+    function TreeChanges(rootNode, mutations) {
+        _super.call(this);
+
+        this.rootNode = rootNode;
+        this.reachableCache = undefined;
+        this.wasReachableCache = undefined;
+        this.anyParentsChanged = false;
+        this.anyAttributesChanged = false;
+        this.anyCharacterDataChanged = false;
+
+        for (var m = 0; m < mutations.length; m++) {
+            var mutation = mutations[m];
+            switch (mutation.type) {
+                case 'childList':
+                    this.anyParentsChanged = true;
+                    for (var i = 0; i < mutation.removedNodes.length; i++) {
+                        var node = mutation.removedNodes[i];
+                        this.getChange(node).removedFromParent(mutation.target);
+                    }
+                    for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        var node = mutation.addedNodes[i];
+                        this.getChange(node).insertedIntoParent();
+                    }
+                    break;
+
+                case 'attributes':
+                    this.anyAttributesChanged = true;
+                    var change = this.getChange(mutation.target);
+                    change.attributeMutated(mutation.attributeName, mutation.oldValue);
+                    break;
+
+                case 'characterData':
+                    this.anyCharacterDataChanged = true;
+                    var change = this.getChange(mutation.target);
+                    change.characterDataMutated(mutation.oldValue);
+                    break;
+            }
+        }
+    }
+    TreeChanges.prototype.getChange = function (node) {
+        var change = this.get(node);
+        if (!change) {
+            change = new NodeChange(node);
+            this.set(node, change);
+        }
+        return change;
+    };
+
+    TreeChanges.prototype.getOldParent = function (node) {
+        var change = this.get(node);
+        return change ? change.getOldParent() : node.parentNode;
+    };
+
+    TreeChanges.prototype.getIsReachable = function (node) {
+        if (node === this.rootNode)
+            return true;
+        if (!node)
+            return false;
+
+        this.reachableCache = this.reachableCache || new NodeMap();
+        var isReachable = this.reachableCache.get(node);
+        if (isReachable === undefined) {
+            isReachable = this.getIsReachable(node.parentNode);
+            this.reachableCache.set(node, isReachable);
+        }
+        return isReachable;
+    };
+
+    // A node wasReachable if its oldParent wasReachable.
+    TreeChanges.prototype.getWasReachable = function (node) {
+        if (node === this.rootNode)
+            return true;
+        if (!node)
+            return false;
+
+        this.wasReachableCache = this.wasReachableCache || new NodeMap();
+        var wasReachable = this.wasReachableCache.get(node);
+        if (wasReachable === undefined) {
+            wasReachable = this.getWasReachable(this.getOldParent(node));
+            this.wasReachableCache.set(node, wasReachable);
+        }
+        return wasReachable;
+    };
+
+    TreeChanges.prototype.reachabilityChange = function (node) {
+        if (this.getIsReachable(node)) {
+            return this.getWasReachable(node) ? 2 /* STAYED_IN */ : 1 /* ENTERED */;
+        }
+
+        return this.getWasReachable(node) ? 5 /* EXITED */ : 0 /* STAYED_OUT */;
+    };
+    return TreeChanges;
+})(NodeMap);
+
+var MutationProjection = (function () {
+    // TOOD(any)
+    function MutationProjection(rootNode, mutations, selectors, calcReordered, calcOldPreviousSibling) {
+        this.rootNode = rootNode;
+        this.mutations = mutations;
+        this.selectors = selectors;
+        this.calcReordered = calcReordered;
+        this.calcOldPreviousSibling = calcOldPreviousSibling;
+        this.treeChanges = new TreeChanges(rootNode, mutations);
+        this.entered = [];
+        this.exited = [];
+        this.stayedIn = new NodeMap();
+        this.visited = new NodeMap();
+        this.childListChangeMap = undefined;
+        this.characterDataOnly = undefined;
+        this.matchCache = undefined;
+
+        this.processMutations();
+    }
+    MutationProjection.prototype.processMutations = function () {
+        if (!this.treeChanges.anyParentsChanged && !this.treeChanges.anyAttributesChanged)
+            return;
+
+        var changedNodes = this.treeChanges.keys();
+        for (var i = 0; i < changedNodes.length; i++) {
+            this.visitNode(changedNodes[i], undefined);
+        }
+    };
+
+    MutationProjection.prototype.visitNode = function (node, parentReachable) {
+        if (this.visited.has(node))
+            return;
+
+        this.visited.set(node, true);
+
+        var change = this.treeChanges.get(node);
+        var reachable = parentReachable;
+
+        // node inherits its parent's reachability change unless
+        // its parentNode was mutated.
+        if ((change && change.childList) || reachable == undefined)
+            reachable = this.treeChanges.reachabilityChange(node);
+
+        if (reachable === 0 /* STAYED_OUT */)
+            return;
+
+        // Cache match results for sub-patterns.
+        this.matchabilityChange(node);
+
+        if (reachable === 1 /* ENTERED */) {
+            this.entered.push(node);
+        } else if (reachable === 5 /* EXITED */) {
+            this.exited.push(node);
+            this.ensureHasOldPreviousSiblingIfNeeded(node);
+        } else if (reachable === 2 /* STAYED_IN */) {
+            var movement = 2 /* STAYED_IN */;
+
+            if (change && change.childList) {
+                if (change.oldParentNode !== node.parentNode) {
+                    movement = 3 /* REPARENTED */;
+                    this.ensureHasOldPreviousSiblingIfNeeded(node);
+                } else if (this.calcReordered && this.wasReordered(node)) {
+                    movement = 4 /* REORDERED */;
+                }
+            }
+
+            this.stayedIn.set(node, movement);
+        }
+
+        if (reachable === 2 /* STAYED_IN */)
+            return;
+
+        for (var child = node.firstChild; child; child = child.nextSibling) {
+            this.visitNode(child, reachable);
+        }
+    };
+
+    MutationProjection.prototype.ensureHasOldPreviousSiblingIfNeeded = function (node) {
+        if (!this.calcOldPreviousSibling)
+            return;
+
+        this.processChildlistChanges();
+
+        var parentNode = node.parentNode;
+        var nodeChange = this.treeChanges.get(node);
+        if (nodeChange && nodeChange.oldParentNode)
+            parentNode = nodeChange.oldParentNode;
+
+        var change = this.childListChangeMap.get(parentNode);
+        if (!change) {
+            change = new ChildListChange();
+            this.childListChangeMap.set(parentNode, change);
+        }
+
+        if (!change.oldPrevious.has(node)) {
+            change.oldPrevious.set(node, node.previousSibling);
+        }
+    };
+
+    MutationProjection.prototype.getChanged = function (summary, selectors, characterDataOnly) {
+        this.selectors = selectors;
+        this.characterDataOnly = characterDataOnly;
+
+        for (var i = 0; i < this.entered.length; i++) {
+            var node = this.entered[i];
+            var matchable = this.matchabilityChange(node);
+            if (matchable === 1 /* ENTERED */ || matchable === 2 /* STAYED_IN */)
+                summary.added.push(node);
+        }
+
+        var stayedInNodes = this.stayedIn.keys();
+        for (var i = 0; i < stayedInNodes.length; i++) {
+            var node = stayedInNodes[i];
+            var matchable = this.matchabilityChange(node);
+
+            if (matchable === 1 /* ENTERED */) {
+                summary.added.push(node);
+            } else if (matchable === 5 /* EXITED */) {
+                summary.removed.push(node);
+            } else if (matchable === 2 /* STAYED_IN */ && (summary.reparented || summary.reordered)) {
+                var movement = this.stayedIn.get(node);
+                if (summary.reparented && movement === 3 /* REPARENTED */)
+                    summary.reparented.push(node);
+                else if (summary.reordered && movement === 4 /* REORDERED */)
+                    summary.reordered.push(node);
+            }
+        }
+
+        for (var i = 0; i < this.exited.length; i++) {
+            var node = this.exited[i];
+            var matchable = this.matchabilityChange(node);
+            if (matchable === 5 /* EXITED */ || matchable === 2 /* STAYED_IN */)
+                summary.removed.push(node);
+        }
+    };
+
+    MutationProjection.prototype.getOldParentNode = function (node) {
+        var change = this.treeChanges.get(node);
+        if (change && change.childList)
+            return change.oldParentNode ? change.oldParentNode : null;
+
+        var reachabilityChange = this.treeChanges.reachabilityChange(node);
+        if (reachabilityChange === 0 /* STAYED_OUT */ || reachabilityChange === 1 /* ENTERED */)
+            throw Error('getOldParentNode requested on invalid node.');
+
+        return node.parentNode;
+    };
+
+    MutationProjection.prototype.getOldPreviousSibling = function (node) {
+        var parentNode = node.parentNode;
+        var nodeChange = this.treeChanges.get(node);
+        if (nodeChange && nodeChange.oldParentNode)
+            parentNode = nodeChange.oldParentNode;
+
+        var change = this.childListChangeMap.get(parentNode);
+        if (!change)
+            throw Error('getOldPreviousSibling requested on invalid node.');
+
+        return change.oldPrevious.get(node);
+    };
+
+    MutationProjection.prototype.getOldAttribute = function (element, attrName) {
+        var change = this.treeChanges.get(element);
+        if (!change || !change.attributes)
+            throw Error('getOldAttribute requested on invalid node.');
+
+        var value = change.getAttributeOldValue(attrName);
+        if (value === undefined)
+            throw Error('getOldAttribute requested for unchanged attribute name.');
+
+        return value;
+    };
+
+    MutationProjection.prototype.attributeChangedNodes = function (includeAttributes) {
+        if (!this.treeChanges.anyAttributesChanged)
+            return {};
+
+        var attributeFilter;
+        var caseInsensitiveFilter;
+        if (includeAttributes) {
+            attributeFilter = {};
+            caseInsensitiveFilter = {};
+            for (var i = 0; i < includeAttributes.length; i++) {
+                var attrName = includeAttributes[i];
+                attributeFilter[attrName] = true;
+                caseInsensitiveFilter[attrName.toLowerCase()] = attrName;
+            }
+        }
+
+        var result = {};
+        var nodes = this.treeChanges.keys();
+
+        for (var i = 0; i < nodes.length; i++) {
+            var node = nodes[i];
+
+            var change = this.treeChanges.get(node);
+            if (!change.attributes)
+                continue;
+
+            if (2 /* STAYED_IN */ !== this.treeChanges.reachabilityChange(node) || 2 /* STAYED_IN */ !== this.matchabilityChange(node)) {
+                continue;
+            }
+
+            var element = node;
+            var changedAttrNames = change.getAttributeNamesMutated();
+            for (var j = 0; j < changedAttrNames.length; j++) {
+                var attrName = changedAttrNames[j];
+
+                if (attributeFilter && !attributeFilter[attrName] && !(change.isCaseInsensitive && caseInsensitiveFilter[attrName])) {
+                    continue;
+                }
+
+                var oldValue = change.getAttributeOldValue(attrName);
+                if (oldValue === element.getAttribute(attrName))
+                    continue;
+
+                if (caseInsensitiveFilter && change.isCaseInsensitive)
+                    attrName = caseInsensitiveFilter[attrName];
+
+                result[attrName] = result[attrName] || [];
+                result[attrName].push(element);
+            }
+        }
+
+        return result;
+    };
+
+    MutationProjection.prototype.getOldCharacterData = function (node) {
+        var change = this.treeChanges.get(node);
+        if (!change || !change.characterData)
+            throw Error('getOldCharacterData requested on invalid node.');
+
+        return change.characterDataOldValue;
+    };
+
+    MutationProjection.prototype.getCharacterDataChanged = function () {
+        if (!this.treeChanges.anyCharacterDataChanged)
+            return [];
+
+        var nodes = this.treeChanges.keys();
+        var result = [];
+        for (var i = 0; i < nodes.length; i++) {
+            var target = nodes[i];
+            if (2 /* STAYED_IN */ !== this.treeChanges.reachabilityChange(target))
+                continue;
+
+            var change = this.treeChanges.get(target);
+            if (!change.characterData || target.textContent == change.characterDataOldValue)
+                continue;
+
+            result.push(target);
+        }
+
+        return result;
+    };
+
+    MutationProjection.prototype.computeMatchabilityChange = function (selector, el) {
+        if (!this.matchCache)
+            this.matchCache = [];
+        if (!this.matchCache[selector.uid])
+            this.matchCache[selector.uid] = new NodeMap();
+
+        var cache = this.matchCache[selector.uid];
+        var result = cache.get(el);
+        if (result === undefined) {
+            result = selector.matchabilityChange(el, this.treeChanges.get(el));
+            cache.set(el, result);
+        }
+        return result;
+    };
+
+    MutationProjection.prototype.matchabilityChange = function (node) {
+        var _this = this;
+        // TODO(rafaelw): Include PI, CDATA?
+        // Only include text nodes.
+        if (this.characterDataOnly) {
+            switch (node.nodeType) {
+                case Node.COMMENT_NODE:
+                case Node.TEXT_NODE:
+                    return 2 /* STAYED_IN */;
+                default:
+                    return 0 /* STAYED_OUT */;
+            }
+        }
+
+        // No element filter. Include all nodes.
+        if (!this.selectors)
+            return 2 /* STAYED_IN */;
+
+        // Element filter. Exclude non-elements.
+        if (node.nodeType !== Node.ELEMENT_NODE)
+            return 0 /* STAYED_OUT */;
+
+        var el = node;
+
+        var matchChanges = this.selectors.map(function (selector) {
+            return _this.computeMatchabilityChange(selector, el);
+        });
+
+        var accum = 0 /* STAYED_OUT */;
+        var i = 0;
+
+        while (accum !== 2 /* STAYED_IN */ && i < matchChanges.length) {
+            switch (matchChanges[i]) {
+                case 2 /* STAYED_IN */:
+                    accum = 2 /* STAYED_IN */;
+                    break;
+                case 1 /* ENTERED */:
+                    if (accum === 5 /* EXITED */)
+                        accum = 2 /* STAYED_IN */;
+                    else
+                        accum = 1 /* ENTERED */;
+                    break;
+                case 5 /* EXITED */:
+                    if (accum === 1 /* ENTERED */)
+                        accum = 2 /* STAYED_IN */;
+                    else
+                        accum = 5 /* EXITED */;
+                    break;
+            }
+
+            i++;
+        }
+
+        return accum;
+    };
+
+    MutationProjection.prototype.getChildlistChange = function (el) {
+        var change = this.childListChangeMap.get(el);
+        if (!change) {
+            change = new ChildListChange();
+            this.childListChangeMap.set(el, change);
+        }
+
+        return change;
+    };
+
+    MutationProjection.prototype.processChildlistChanges = function () {
+        if (this.childListChangeMap)
+            return;
+
+        this.childListChangeMap = new NodeMap();
+
+        for (var i = 0; i < this.mutations.length; i++) {
+            var mutation = this.mutations[i];
+            if (mutation.type != 'childList')
+                continue;
+
+            if (this.treeChanges.reachabilityChange(mutation.target) !== 2 /* STAYED_IN */ && !this.calcOldPreviousSibling)
+                continue;
+
+            var change = this.getChildlistChange(mutation.target);
+
+            var oldPrevious = mutation.previousSibling;
+
+            function recordOldPrevious(node, previous) {
+                if (!node || change.oldPrevious.has(node) || change.added.has(node) || change.maybeMoved.has(node))
+                    return;
+
+                if (previous && (change.added.has(previous) || change.maybeMoved.has(previous)))
+                    return;
+
+                change.oldPrevious.set(node, previous);
+            }
+
+            for (var j = 0; j < mutation.removedNodes.length; j++) {
+                var node = mutation.removedNodes[j];
+                recordOldPrevious(node, oldPrevious);
+
+                if (change.added.has(node)) {
+                    change.added.delete(node);
+                } else {
+                    change.removed.set(node, true);
+                    change.maybeMoved.delete(node);
+                }
+
+                oldPrevious = node;
+            }
+
+            recordOldPrevious(mutation.nextSibling, oldPrevious);
+
+            for (var j = 0; j < mutation.addedNodes.length; j++) {
+                var node = mutation.addedNodes[j];
+                if (change.removed.has(node)) {
+                    change.removed.delete(node);
+                    change.maybeMoved.set(node, true);
+                } else {
+                    change.added.set(node, true);
+                }
+            }
+        }
+    };
+
+    MutationProjection.prototype.wasReordered = function (node) {
+        if (!this.treeChanges.anyParentsChanged)
+            return false;
+
+        this.processChildlistChanges();
+
+        var parentNode = node.parentNode;
+        var nodeChange = this.treeChanges.get(node);
+        if (nodeChange && nodeChange.oldParentNode)
+            parentNode = nodeChange.oldParentNode;
+
+        var change = this.childListChangeMap.get(parentNode);
+        if (!change)
+            return false;
+
+        if (change.moved)
+            return change.moved.get(node);
+
+        change.moved = new NodeMap();
+        var pendingMoveDecision = new NodeMap();
+
+        function isMoved(node) {
+            if (!node)
+                return false;
+            if (!change.maybeMoved.has(node))
+                return false;
+
+            var didMove = change.moved.get(node);
+            if (didMove !== undefined)
+                return didMove;
+
+            if (pendingMoveDecision.has(node)) {
+                didMove = true;
+            } else {
+                pendingMoveDecision.set(node, true);
+                didMove = getPrevious(node) !== getOldPrevious(node);
+            }
+
+            if (pendingMoveDecision.has(node)) {
+                pendingMoveDecision.delete(node);
+                change.moved.set(node, didMove);
+            } else {
+                didMove = change.moved.get(node);
+            }
+
+            return didMove;
+        }
+
+        var oldPreviousCache = new NodeMap();
+        function getOldPrevious(node) {
+            var oldPrevious = oldPreviousCache.get(node);
+            if (oldPrevious !== undefined)
+                return oldPrevious;
+
+            oldPrevious = change.oldPrevious.get(node);
+            while (oldPrevious && (change.removed.has(oldPrevious) || isMoved(oldPrevious))) {
+                oldPrevious = getOldPrevious(oldPrevious);
+            }
+
+            if (oldPrevious === undefined)
+                oldPrevious = node.previousSibling;
+            oldPreviousCache.set(node, oldPrevious);
+
+            return oldPrevious;
+        }
+
+        var previousCache = new NodeMap();
+        function getPrevious(node) {
+            if (previousCache.has(node))
+                return previousCache.get(node);
+
+            var previous = node.previousSibling;
+            while (previous && (change.added.has(previous) || isMoved(previous)))
+                previous = previous.previousSibling;
+
+            previousCache.set(node, previous);
+            return previous;
+        }
+
+        change.maybeMoved.keys().forEach(isMoved);
+        return change.moved.get(node);
+    };
+    return MutationProjection;
+})();
+
+var Summary = (function () {
+    function Summary(projection, query) {
+        var _this = this;
+        this.projection = projection;
+        this.added = [];
+        this.removed = [];
+        this.reparented = query.all || query.element ? [] : undefined;
+        this.reordered = query.all ? [] : undefined;
+
+        projection.getChanged(this, query.elementFilter, query.characterData);
+
+        if (query.all || query.attribute || query.attributeList) {
+            var filter = query.attribute ? [query.attribute] : query.attributeList;
+            var attributeChanged = projection.attributeChangedNodes(filter);
+
+            if (query.attribute) {
+                this.valueChanged = attributeChanged[query.attribute] || [];
+            } else {
+                this.attributeChanged = attributeChanged;
+                if (query.attributeList) {
+                    query.attributeList.forEach(function (attrName) {
+                        if (!_this.attributeChanged.hasOwnProperty(attrName))
+                            _this.attributeChanged[attrName] = [];
+                    });
+                }
+            }
+        }
+
+        if (query.all || query.characterData) {
+            var characterDataChanged = projection.getCharacterDataChanged();
+
+            if (query.characterData)
+                this.valueChanged = characterDataChanged;
+            else
+                this.characterDataChanged = characterDataChanged;
+        }
+
+        if (this.reordered)
+            this.getOldPreviousSibling = projection.getOldPreviousSibling.bind(projection);
+    }
+    Summary.prototype.getOldParentNode = function (node) {
+        return this.projection.getOldParentNode(node);
+    };
+
+    Summary.prototype.getOldAttribute = function (node, name) {
+        return this.projection.getOldAttribute(node, name);
+    };
+
+    Summary.prototype.getOldCharacterData = function (node) {
+        return this.projection.getOldCharacterData(node);
+    };
+
+    Summary.prototype.getOldPreviousSibling = function (node) {
+        return this.projection.getOldPreviousSibling(node);
+    };
+    return Summary;
+})();
+
+// TODO(rafaelw): Allow ':' and '.' as valid name characters.
+var validNameInitialChar = /[a-zA-Z_]+/;
+var validNameNonInitialChar = /[a-zA-Z0-9_\-]+/;
+
+// TODO(rafaelw): Consider allowing backslash in the attrValue.
+// TODO(rafaelw): There's got a to be way to represent this state machine
+// more compactly???
+function escapeQuotes(value) {
+    return '"' + value.replace(/"/, '\\\"') + '"';
+}
+
+var Qualifier = (function () {
+    function Qualifier() {
+    }
+    Qualifier.prototype.matches = function (oldValue) {
+        if (oldValue === null)
+            return false;
+
+        if (this.attrValue === undefined)
+            return true;
+
+        if (!this.contains)
+            return this.attrValue == oldValue;
+
+        var tokens = oldValue.split(' ');
+        for (var i = 0; i < tokens.length; i++) {
+            if (this.attrValue === tokens[i])
+                return true;
+        }
+
+        return false;
+    };
+
+    Qualifier.prototype.toString = function () {
+        if (this.attrName === 'class' && this.contains)
+            return '.' + this.attrValue;
+
+        if (this.attrName === 'id' && !this.contains)
+            return '#' + this.attrValue;
+
+        if (this.contains)
+            return '[' + this.attrName + '~=' + escapeQuotes(this.attrValue) + ']';
+
+        if ('attrValue' in this)
+            return '[' + this.attrName + '=' + escapeQuotes(this.attrValue) + ']';
+
+        return '[' + this.attrName + ']';
+    };
+    return Qualifier;
+})();
+
+var Selector = (function () {
+    function Selector() {
+        this.uid = Selector.nextUid++;
+        this.qualifiers = [];
+    }
+    Object.defineProperty(Selector.prototype, "caseInsensitiveTagName", {
+        get: function () {
+            return this.tagName.toUpperCase();
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Object.defineProperty(Selector.prototype, "selectorString", {
+        get: function () {
+            return this.tagName + this.qualifiers.join('');
+        },
+        enumerable: true,
+        configurable: true
+    });
+
+    Selector.prototype.isMatching = function (el) {
+        return el[Selector.matchesSelector](this.selectorString);
+    };
+
+    Selector.prototype.wasMatching = function (el, change, isMatching) {
+        if (!change || !change.attributes)
+            return isMatching;
+
+        var tagName = change.isCaseInsensitive ? this.caseInsensitiveTagName : this.tagName;
+        if (tagName !== '*' && tagName !== el.tagName)
+            return false;
+
+        var attributeOldValues = [];
+        var anyChanged = false;
+        for (var i = 0; i < this.qualifiers.length; i++) {
+            var qualifier = this.qualifiers[i];
+            var oldValue = change.getAttributeOldValue(qualifier.attrName);
+            attributeOldValues.push(oldValue);
+            anyChanged = anyChanged || (oldValue !== undefined);
+        }
+
+        if (!anyChanged)
+            return isMatching;
+
+        for (var i = 0; i < this.qualifiers.length; i++) {
+            var qualifier = this.qualifiers[i];
+            var oldValue = attributeOldValues[i];
+            if (oldValue === undefined)
+                oldValue = el.getAttribute(qualifier.attrName);
+            if (!qualifier.matches(oldValue))
+                return false;
+        }
+
+        return true;
+    };
+
+    Selector.prototype.matchabilityChange = function (el, change) {
+        var isMatching = this.isMatching(el);
+        if (isMatching)
+            return this.wasMatching(el, change, isMatching) ? 2 /* STAYED_IN */ : 1 /* ENTERED */;
+        else
+            return this.wasMatching(el, change, isMatching) ? 5 /* EXITED */ : 0 /* STAYED_OUT */;
+    };
+
+    Selector.parseSelectors = function (input) {
+        var selectors = [];
+        var currentSelector;
+        var currentQualifier;
+
+        function newSelector() {
+            if (currentSelector) {
+                if (currentQualifier) {
+                    currentSelector.qualifiers.push(currentQualifier);
+                    currentQualifier = undefined;
+                }
+
+                selectors.push(currentSelector);
+            }
+            currentSelector = new Selector();
+        }
+
+        function newQualifier() {
+            if (currentQualifier)
+                currentSelector.qualifiers.push(currentQualifier);
+
+            currentQualifier = new Qualifier();
+        }
+
+        var WHITESPACE = /\s/;
+        var valueQuoteChar;
+        var SYNTAX_ERROR = 'Invalid or unsupported selector syntax.';
+
+        var SELECTOR = 1;
+        var TAG_NAME = 2;
+        var QUALIFIER = 3;
+        var QUALIFIER_NAME_FIRST_CHAR = 4;
+        var QUALIFIER_NAME = 5;
+        var ATTR_NAME_FIRST_CHAR = 6;
+        var ATTR_NAME = 7;
+        var EQUIV_OR_ATTR_QUAL_END = 8;
+        var EQUAL = 9;
+        var ATTR_QUAL_END = 10;
+        var VALUE_FIRST_CHAR = 11;
+        var VALUE = 12;
+        var QUOTED_VALUE = 13;
+        var SELECTOR_SEPARATOR = 14;
+
+        var state = SELECTOR;
+        var i = 0;
+        while (i < input.length) {
+            var c = input[i++];
+
+            switch (state) {
+                case SELECTOR:
+                    if (c.match(validNameInitialChar)) {
+                        newSelector();
+                        currentSelector.tagName = c;
+                        state = TAG_NAME;
+                        break;
+                    }
+
+                    if (c == '*') {
+                        newSelector();
+                        currentSelector.tagName = '*';
+                        state = QUALIFIER;
+                        break;
+                    }
+
+                    if (c == '.') {
+                        newSelector();
+                        newQualifier();
+                        currentSelector.tagName = '*';
+                        currentQualifier.attrName = 'class';
+                        currentQualifier.contains = true;
+                        state = QUALIFIER_NAME_FIRST_CHAR;
+                        break;
+                    }
+                    if (c == '#') {
+                        newSelector();
+                        newQualifier();
+                        currentSelector.tagName = '*';
+                        currentQualifier.attrName = 'id';
+                        state = QUALIFIER_NAME_FIRST_CHAR;
+                        break;
+                    }
+                    if (c == '[') {
+                        newSelector();
+                        newQualifier();
+                        currentSelector.tagName = '*';
+                        currentQualifier.attrName = '';
+                        state = ATTR_NAME_FIRST_CHAR;
+                        break;
+                    }
+
+                    if (c.match(WHITESPACE))
+                        break;
+
+                    throw Error(SYNTAX_ERROR);
+
+                case TAG_NAME:
+                    if (c.match(validNameNonInitialChar)) {
+                        currentSelector.tagName += c;
+                        break;
+                    }
+
+                    if (c == '.') {
+                        newQualifier();
+                        currentQualifier.attrName = 'class';
+                        currentQualifier.contains = true;
+                        state = QUALIFIER_NAME_FIRST_CHAR;
+                        break;
+                    }
+                    if (c == '#') {
+                        newQualifier();
+                        currentQualifier.attrName = 'id';
+                        state = QUALIFIER_NAME_FIRST_CHAR;
+                        break;
+                    }
+                    if (c == '[') {
+                        newQualifier();
+                        currentQualifier.attrName = '';
+                        state = ATTR_NAME_FIRST_CHAR;
+                        break;
+                    }
+
+                    if (c.match(WHITESPACE)) {
+                        state = SELECTOR_SEPARATOR;
+                        break;
+                    }
+
+                    if (c == ',') {
+                        state = SELECTOR;
+                        break;
+                    }
+
+                    throw Error(SYNTAX_ERROR);
+
+                case QUALIFIER:
+                    if (c == '.') {
+                        newQualifier();
+                        currentQualifier.attrName = 'class';
+                        currentQualifier.contains = true;
+                        state = QUALIFIER_NAME_FIRST_CHAR;
+                        break;
+                    }
+                    if (c == '#') {
+                        newQualifier();
+                        currentQualifier.attrName = 'id';
+                        state = QUALIFIER_NAME_FIRST_CHAR;
+                        break;
+                    }
+                    if (c == '[') {
+                        newQualifier();
+                        currentQualifier.attrName = '';
+                        state = ATTR_NAME_FIRST_CHAR;
+                        break;
+                    }
+
+                    if (c.match(WHITESPACE)) {
+                        state = SELECTOR_SEPARATOR;
+                        break;
+                    }
+
+                    if (c == ',') {
+                        state = SELECTOR;
+                        break;
+                    }
+
+                    throw Error(SYNTAX_ERROR);
+
+                case QUALIFIER_NAME_FIRST_CHAR:
+                    if (c.match(validNameInitialChar)) {
+                        currentQualifier.attrValue = c;
+                        state = QUALIFIER_NAME;
+                        break;
+                    }
+
+                    throw Error(SYNTAX_ERROR);
+
+                case QUALIFIER_NAME:
+                    if (c.match(validNameNonInitialChar)) {
+                        currentQualifier.attrValue += c;
+                        break;
+                    }
+
+                    if (c == '.') {
+                        newQualifier();
+                        currentQualifier.attrName = 'class';
+                        currentQualifier.contains = true;
+                        state = QUALIFIER_NAME_FIRST_CHAR;
+                        break;
+                    }
+                    if (c == '#') {
+                        newQualifier();
+                        currentQualifier.attrName = 'id';
+                        state = QUALIFIER_NAME_FIRST_CHAR;
+                        break;
+                    }
+                    if (c == '[') {
+                        newQualifier();
+                        state = ATTR_NAME_FIRST_CHAR;
+                        break;
+                    }
+
+                    if (c.match(WHITESPACE)) {
+                        state = SELECTOR_SEPARATOR;
+                        break;
+                    }
+                    if (c == ',') {
+                        state = SELECTOR;
+                        break;
+                    }
+
+                    throw Error(SYNTAX_ERROR);
+
+                case ATTR_NAME_FIRST_CHAR:
+                    if (c.match(validNameInitialChar)) {
+                        currentQualifier.attrName = c;
+                        state = ATTR_NAME;
+                        break;
+                    }
+
+                    if (c.match(WHITESPACE))
+                        break;
+
+                    throw Error(SYNTAX_ERROR);
+
+                case ATTR_NAME:
+                    if (c.match(validNameNonInitialChar)) {
+                        currentQualifier.attrName += c;
+                        break;
+                    }
+
+                    if (c.match(WHITESPACE)) {
+                        state = EQUIV_OR_ATTR_QUAL_END;
+                        break;
+                    }
+
+                    if (c == '~') {
+                        currentQualifier.contains = true;
+                        state = EQUAL;
+                        break;
+                    }
+
+                    if (c == '=') {
+                        currentQualifier.attrValue = '';
+                        state = VALUE_FIRST_CHAR;
+                        break;
+                    }
+
+                    if (c == ']') {
+                        state = QUALIFIER;
+                        break;
+                    }
+
+                    throw Error(SYNTAX_ERROR);
+
+                case EQUIV_OR_ATTR_QUAL_END:
+                    if (c == '~') {
+                        currentQualifier.contains = true;
+                        state = EQUAL;
+                        break;
+                    }
+
+                    if (c == '=') {
+                        currentQualifier.attrValue = '';
+                        state = VALUE_FIRST_CHAR;
+                        break;
+                    }
+
+                    if (c == ']') {
+                        state = QUALIFIER;
+                        break;
+                    }
+
+                    if (c.match(WHITESPACE))
+                        break;
+
+                    throw Error(SYNTAX_ERROR);
+
+                case EQUAL:
+                    if (c == '=') {
+                        currentQualifier.attrValue = '';
+                        state = VALUE_FIRST_CHAR;
+                        break;
+                    }
+
+                    throw Error(SYNTAX_ERROR);
+
+                case ATTR_QUAL_END:
+                    if (c == ']') {
+                        state = QUALIFIER;
+                        break;
+                    }
+
+                    if (c.match(WHITESPACE))
+                        break;
+
+                    throw Error(SYNTAX_ERROR);
+
+                case VALUE_FIRST_CHAR:
+                    if (c.match(WHITESPACE))
+                        break;
+
+                    if (c == '"' || c == "'") {
+                        valueQuoteChar = c;
+                        state = QUOTED_VALUE;
+                        break;
+                    }
+
+                    currentQualifier.attrValue += c;
+                    state = VALUE;
+                    break;
+
+                case VALUE:
+                    if (c.match(WHITESPACE)) {
+                        state = ATTR_QUAL_END;
+                        break;
+                    }
+                    if (c == ']') {
+                        state = QUALIFIER;
+                        break;
+                    }
+                    if (c == "'" || c == '"')
+                        throw Error(SYNTAX_ERROR);
+
+                    currentQualifier.attrValue += c;
+                    break;
+
+                case QUOTED_VALUE:
+                    if (c == valueQuoteChar) {
+                        state = ATTR_QUAL_END;
+                        break;
+                    }
+
+                    currentQualifier.attrValue += c;
+                    break;
+
+                case SELECTOR_SEPARATOR:
+                    if (c.match(WHITESPACE))
+                        break;
+
+                    if (c == ',') {
+                        state = SELECTOR;
+                        break;
+                    }
+
+                    throw Error(SYNTAX_ERROR);
+            }
+        }
+
+        switch (state) {
+            case SELECTOR:
+            case TAG_NAME:
+            case QUALIFIER:
+            case QUALIFIER_NAME:
+            case SELECTOR_SEPARATOR:
+                // Valid end states.
+                newSelector();
+                break;
+            default:
+                throw Error(SYNTAX_ERROR);
+        }
+
+        if (!selectors.length)
+            throw Error(SYNTAX_ERROR);
+
+        return selectors;
+    };
+    Selector.nextUid = 1;
+    Selector.matchesSelector = (function () {
+        var element = document.createElement('div');
+        if (typeof element['webkitMatchesSelector'] === 'function')
+            return 'webkitMatchesSelector';
+        if (typeof element['mozMatchesSelector'] === 'function')
+            return 'mozMatchesSelector';
+        if (typeof element['msMatchesSelector'] === 'function')
+            return 'msMatchesSelector';
+
+        return 'matchesSelector';
+    })();
+    return Selector;
+})();
+
+var attributeFilterPattern = /^([a-zA-Z:_]+[a-zA-Z0-9_\-:\.]*)$/;
+
+function validateAttribute(attribute) {
+    if (typeof attribute != 'string')
+        throw Error('Invalid request opion. attribute must be a non-zero length string.');
+
+    attribute = attribute.trim();
+
+    if (!attribute)
+        throw Error('Invalid request opion. attribute must be a non-zero length string.');
+
+    if (!attribute.match(attributeFilterPattern))
+        throw Error('Invalid request option. invalid attribute name: ' + attribute);
+
+    return attribute;
+}
+
+function validateElementAttributes(attribs) {
+    if (!attribs.trim().length)
+        throw Error('Invalid request option: elementAttributes must contain at least one attribute.');
+
+    var lowerAttributes = {};
+    var attributes = {};
+
+    var tokens = attribs.split(/\s+/);
+    for (var i = 0; i < tokens.length; i++) {
+        var name = tokens[i];
+        if (!name)
+            continue;
+
+        var name = validateAttribute(name);
+        var nameLower = name.toLowerCase();
+        if (lowerAttributes[nameLower])
+            throw Error('Invalid request option: observing multiple case variations of the same attribute is not supported.');
+
+        attributes[name] = true;
+        lowerAttributes[nameLower] = true;
+    }
+
+    return Object.keys(attributes);
+}
+
+function elementFilterAttributes(selectors) {
+    var attributes = {};
+
+    selectors.forEach(function (selector) {
+        selector.qualifiers.forEach(function (qualifier) {
+            attributes[qualifier.attrName] = true;
+        });
+    });
+
+    return Object.keys(attributes);
+}
+
+var MutationSummary = (function () {
+    function MutationSummary(opts) {
+        var _this = this;
+        this.connected = false;
+        this.options = MutationSummary.validateOptions(opts);
+        this.observerOptions = MutationSummary.createObserverOptions(this.options.queries);
+        this.root = this.options.rootNode;
+        this.callback = this.options.callback;
+
+        this.elementFilter = Array.prototype.concat.apply([], this.options.queries.map(function (query) {
+            return query.elementFilter ? query.elementFilter : [];
+        }));
+        if (!this.elementFilter.length)
+            this.elementFilter = undefined;
+
+        this.calcReordered = this.options.queries.some(function (query) {
+            return query.all;
+        });
+
+        this.queryValidators = []; // TODO(rafaelw): Shouldn't always define this.
+        if (MutationSummary.createQueryValidator) {
+            this.queryValidators = this.options.queries.map(function (query) {
+                return MutationSummary.createQueryValidator(_this.root, query);
+            });
+        }
+
+        this.observer = new MutationObserverCtor(function (mutations) {
+            _this.observerCallback(mutations);
+        });
+
+        this.reconnect();
+    }
+    MutationSummary.createObserverOptions = function (queries) {
+        var observerOptions = {
+            childList: true,
+            subtree: true
+        };
+
+        var attributeFilter;
+        function observeAttributes(attributes) {
+            if (observerOptions.attributes && !attributeFilter)
+                return;
+
+            observerOptions.attributes = true;
+            observerOptions.attributeOldValue = true;
+
+            if (!attributes) {
+                // observe all.
+                attributeFilter = undefined;
+                return;
+            }
+
+            // add to observed.
+            attributeFilter = attributeFilter || {};
+            attributes.forEach(function (attribute) {
+                attributeFilter[attribute] = true;
+                attributeFilter[attribute.toLowerCase()] = true;
+            });
+        }
+
+        queries.forEach(function (query) {
+            if (query.characterData) {
+                observerOptions.characterData = true;
+                observerOptions.characterDataOldValue = true;
+                return;
+            }
+
+            if (query.all) {
+                observeAttributes();
+                observerOptions.characterData = true;
+                observerOptions.characterDataOldValue = true;
+                return;
+            }
+
+            if (query.attribute) {
+                observeAttributes([query.attribute.trim()]);
+                return;
+            }
+
+            var attributes = elementFilterAttributes(query.elementFilter).concat(query.attributeList || []);
+            if (attributes.length)
+                observeAttributes(attributes);
+        });
+
+        if (attributeFilter)
+            observerOptions.attributeFilter = Object.keys(attributeFilter);
+
+        return observerOptions;
+    };
+
+    MutationSummary.validateOptions = function (options) {
+        for (var prop in options) {
+            if (!(prop in MutationSummary.optionKeys))
+                throw Error('Invalid option: ' + prop);
+        }
+
+        if (typeof options.callback !== 'function')
+            throw Error('Invalid options: callback is required and must be a function');
+
+        if (!options.queries || !options.queries.length)
+            throw Error('Invalid options: queries must contain at least one query request object.');
+
+        var opts = {
+            callback: options.callback,
+            rootNode: options.rootNode || document,
+            observeOwnChanges: !!options.observeOwnChanges,
+            oldPreviousSibling: !!options.oldPreviousSibling,
+            queries: []
+        };
+
+        for (var i = 0; i < options.queries.length; i++) {
+            var request = options.queries[i];
+
+            // all
+            if (request.all) {
+                if (Object.keys(request).length > 1)
+                    throw Error('Invalid request option. all has no options.');
+
+                opts.queries.push({ all: true });
+                continue;
+            }
+
+            // attribute
+            if ('attribute' in request) {
+                var query = {
+                    attribute: validateAttribute(request.attribute)
+                };
+
+                query.elementFilter = Selector.parseSelectors('*[' + query.attribute + ']');
+
+                if (Object.keys(request).length > 1)
+                    throw Error('Invalid request option. attribute has no options.');
+
+                opts.queries.push(query);
+                continue;
+            }
+
+            // element
+            if ('element' in request) {
+                var requestOptionCount = Object.keys(request).length;
+                var query = {
+                    element: request.element,
+                    elementFilter: Selector.parseSelectors(request.element)
+                };
+
+                if (request.hasOwnProperty('elementAttributes')) {
+                    query.attributeList = validateElementAttributes(request.elementAttributes);
+                    requestOptionCount--;
+                }
+
+                if (requestOptionCount > 1)
+                    throw Error('Invalid request option. element only allows elementAttributes option.');
+
+                opts.queries.push(query);
+                continue;
+            }
+
+            // characterData
+            if (request.characterData) {
+                if (Object.keys(request).length > 1)
+                    throw Error('Invalid request option. characterData has no options.');
+
+                opts.queries.push({ characterData: true });
+                continue;
+            }
+
+            throw Error('Invalid request option. Unknown query request.');
+        }
+
+        return opts;
+    };
+
+    MutationSummary.prototype.createSummaries = function (mutations) {
+        if (!mutations || !mutations.length)
+            return [];
+
+        var projection = new MutationProjection(this.root, mutations, this.elementFilter, this.calcReordered, this.options.oldPreviousSibling);
+
+        var summaries = [];
+        for (var i = 0; i < this.options.queries.length; i++) {
+            summaries.push(new Summary(projection, this.options.queries[i]));
+        }
+
+        return summaries;
+    };
+
+    MutationSummary.prototype.checkpointQueryValidators = function () {
+        this.queryValidators.forEach(function (validator) {
+            if (validator)
+                validator.recordPreviousState();
+        });
+    };
+
+    MutationSummary.prototype.runQueryValidators = function (summaries) {
+        this.queryValidators.forEach(function (validator, index) {
+            if (validator)
+                validator.validate(summaries[index]);
+        });
+    };
+
+    MutationSummary.prototype.changesToReport = function (summaries) {
+        return summaries.some(function (summary) {
+            var summaryProps = [
+                'added', 'removed', 'reordered', 'reparented',
+                'valueChanged', 'characterDataChanged'];
+            if (summaryProps.some(function (prop) {
+                return summary[prop] && summary[prop].length;
+            }))
+                return true;
+
+            if (summary.attributeChanged) {
+                var attrNames = Object.keys(summary.attributeChanged);
+                var attrsChanged = attrNames.some(function (attrName) {
+                    return !!summary.attributeChanged[attrName].length;
+                });
+                if (attrsChanged)
+                    return true;
+            }
+            return false;
+        });
+    };
+
+    MutationSummary.prototype.observerCallback = function (mutations) {
+        if (!this.options.observeOwnChanges)
+            this.observer.disconnect();
+
+        var summaries = this.createSummaries(mutations);
+        this.runQueryValidators(summaries);
+
+        if (this.options.observeOwnChanges)
+            this.checkpointQueryValidators();
+
+        if (this.changesToReport(summaries))
+            this.callback(summaries);
+
+        // disconnect() may have been called during the callback.
+        if (!this.options.observeOwnChanges && this.connected) {
+            this.checkpointQueryValidators();
+            this.observer.observe(this.root, this.observerOptions);
+        }
+    };
+
+    MutationSummary.prototype.reconnect = function () {
+        if (this.connected)
+            throw Error('Already connected');
+
+        this.observer.observe(this.root, this.observerOptions);
+        this.connected = true;
+        this.checkpointQueryValidators();
+    };
+
+    MutationSummary.prototype.takeSummaries = function () {
+        if (!this.connected)
+            throw Error('Not connected');
+
+        var summaries = this.createSummaries(this.observer.takeRecords());
+        return this.changesToReport(summaries) ? summaries : undefined;
+    };
+
+    MutationSummary.prototype.disconnect = function () {
+        var summaries = this.takeSummaries();
+        this.observer.disconnect();
+        this.connected = false;
+        return summaries;
+    };
+    MutationSummary.NodeMap = NodeMap;
+    MutationSummary.parseElementFilter = Selector.parseSelectors;
+
+    MutationSummary.optionKeys = {
+        'callback': true,
+        'queries': true,
+        'rootNode': true,
+        'oldPreviousSibling': true,
+        'observeOwnChanges': true
+    };
+    return MutationSummary;
+})();
+
+module.exports = MutationSummary
 },{}]},{},[1])
 //# sourceMappingURL=content.js.map
