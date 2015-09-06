@@ -1,7 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}require("babel/polyfill");var _libContentGittenify=require("./lib/content/gittenify"),_libContentGittenify2=_interopRequireDefault(_libContentGittenify);chrome.storage.local.get(null,_libContentGittenify2["default"]);
+"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}require("babel/polyfill");var _contentGittenify=require("./content/gittenify"),_contentGittenify2=_interopRequireDefault(_contentGittenify);chrome.storage.local.get(null,_contentGittenify2["default"]);
 
-},{"./lib/content/gittenify":3,"babel/polyfill":188}],2:[function(require,module,exports){
+},{"./content/gittenify":3,"babel/polyfill":188}],2:[function(require,module,exports){
 "use strict";function catPhoto(t,e,o){return"https://placekitten.com/"+e+"/"+o+"?image="+t}Object.defineProperty(exports,"__esModule",{value:!0}),exports["default"]=catPhoto,module.exports=exports["default"];
 
 },{}],3:[function(require,module,exports){

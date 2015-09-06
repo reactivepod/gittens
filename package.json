@@ -2,17 +2,16 @@
   "name": "gittens",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "build": "npm run build-options && npm run build-content",
     "build-dev": "npm run build-options-dev && npm run build-content-dev",
     "start": "npm run watch-options & npm run watch-content",
-    "build-options": "esnow -e options.js -o dist/ -p",
-    "build-options-dev": "esnow -e options.js -o dist/",
-    "watch-options": "esnow -e options.js -o dist/ -w",
-    "build-content": "esnow -e content.js -o dist/ -p",
-    "build-content-dev": "esnow -e content.js -o dist/",
-    "watch-content": "esnow -e content.js -o dist/ -w"
+    "build-options": "esnow -e ./lib/options.js -o dist/ -p",
+    "build-options-dev": "esnow -e ./lib/options.js -o dist/",
+    "watch-options": "esnow -e ./lib/options.js -o dist/ -w",
+    "build-content": "esnow -e ./lib/content.js -o dist/ -p",
+    "build-content-dev": "esnow -e ./lib/content.js -o dist/",
+    "watch-content": "esnow -e ./lib/content.js -o dist/ -w"
   },
   "keywords": [],
   "author": "",
