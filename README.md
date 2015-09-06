@@ -8,7 +8,7 @@ This should be on the Chrome Web Store soon™, but for now, go to Chrome Settin
 
 ## Building
 
-For development, just run `npm start`. To do a single build, run `npm run build`
+For development, just run `npm start`. To do a single build, run `npm run build`, if you want to do a single build without running Uglify over the code run `npm run build-dev`.
 
 ## Screenshots
 
