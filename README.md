@@ -4,7 +4,7 @@ Disguises unpleasant gits (as in: [a completely ignorant, childish person with n
 
 ## Installation
 
-This should be on the Chrome Web Store soon™, but for now, go to Chrome Settings -> Extensions -> check off "Developer Mode" -> "Load unpacked extension...", and point it at the `dist` directory.
+This should be on the Chrome Web Store soon™, but for now, go to Chrome Settings &larr; Extensions &larr; check off "Developer Mode" &larr; "Load unpacked extension...", and point it at the `dist` directory.
 
 ## Building
 
