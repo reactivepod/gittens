@@ -12,7 +12,7 @@
     "build-content": "esnow -e ./lib/content.js -o dist/ -p",
     "build-content-dev": "esnow -e ./lib/content.js -o dist/",
     "watch-content": "esnow -e ./lib/content.js -o dist/ -w",
-    "test": "node ./tests/"
+    "test": "node ./test/"
   },
   "keywords": [],
   "author": "",
