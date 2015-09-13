@@ -11,7 +11,8 @@
     "watch-options": "esnow -e ./lib/options.js -o dist/ -w",
     "build-content": "esnow -e ./lib/content.js -o dist/ -p",
     "build-content-dev": "esnow -e ./lib/content.js -o dist/",
-    "watch-content": "esnow -e ./lib/content.js -o dist/ -w"
+    "watch-content": "esnow -e ./lib/content.js -o dist/ -w",
+    "test": "node ./tests/"
   },
   "keywords": [],
   "author": "",
