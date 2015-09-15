@@ -13,7 +13,7 @@
     "build-content-dev": "esnow -e ./lib/content.js -o dist/",
     "watch-content": "esnow -e ./lib/content.js -o dist/ -w",
     "pretest": "esnow -e ./test/tests/index.js -o ./test/",
-    "test": "node ./test/"
+    "test": "cat test/index.js | browser-run --browser chrome"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,7 @@
   "devDependencies": {
     "babel": "^5.8.23",
     "babel-eslint": "^4.1.1",
+    "browser-run": "^2.4.0",
     "eslint": "^1.3.1",
     "eslint-config-airbnb": "0.0.8",
     "esnow": "^2.0.1",
